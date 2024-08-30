@@ -1,0 +1,31 @@
+/* Write your code here: */
+
+/* Selecting 2 elements */
+h1, h2 {
+    color: blueviolet;
+}
+
+/* Selecting child element (1 Level Deep) */
+.box > .done {
+    color: firebrick;
+}
+
+/* Method 2 */
+.box > p {
+    color: firebrick;
+}
+
+/* Ancestor - Descendant */
+.box li {
+    color: blue;
+}
+
+/* Chain Selectors */
+/* Element name should always go first */
+li.done {
+    color: seagreen;
+}
+
+ul p.done {
+    font-size: 0.5rem;
+}
