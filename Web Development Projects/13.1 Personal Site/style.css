@@ -6,3 +6,13 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     align-items: center;
 }
+
+#alvin_image {
+    border-radius: 30px;
+}
+
+#code_image {
+    width: 200px;
+    height: 200px;
+    border-radius: 30px;
+}
