@@ -56,3 +56,42 @@ function lifeInWeeks(age) {
         console.log('You have ' + days + ' days, ' + weeks +' weeks,' + months + ' months left' );
     }
     
+//Create your function below this line.
+//The first parameter should be the weight and the second should be the height.
+function bmiCalculator(weight, height) {
+    bmi = Math.round((weight) / (height * height), 2) // Method 1
+    bmi = Math.round((weight) / Math.pow(height, 2)) //Method 2
+    return bmi
+}
+// If my weight is 65Kg and my height is 1.8m, I should be able to call your function like this:
+var bmi = bmiCalculator(65, 1.8); 
+// console.log(bmi)
+//bmi should equal 20 when it's rounded to the nearest whole number.
+
+
+// Love Calculator
+var fName = prompt('Enter your name: ');
+var sName = prompt("Enter your crush's name: ");
+
+var result = Math.random();
+result = (result*100)+1;
+result = Math.floor(result);
+
+// if (result === 90 ) {
+//     alert("Hello " + fName + ", Your chances with " + sName + " are very high at " + result + " %");
+// } else {
+//     alert("Hello " + fName + ", Your chances with " + sName + " are very low at " + result + " %");
+// }
+
+if (result > 90 ) {
+    alert("Hello " + fName + ", Your chances with " + sName + " are very high at " + result + " %");
+}
+if (result > 30 && result <= 90) {
+    alert("Hello " + fName + ", Your chances with " + sName + " are moderate " + result + " %");
+}
+if (result <= 30 ) {
+    alert("Hello " + fName + ", Your chances with " + sName + " are very low at " + result + " %");
+}
+
+
+console.log("Hello " + fName + ", Your chances with " + sName + " are " + result + " %");
