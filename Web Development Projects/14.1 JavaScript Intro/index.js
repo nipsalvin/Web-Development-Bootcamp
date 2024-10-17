@@ -131,3 +131,38 @@ if (guestList.includes(guest)) {
 } else {
     alert('You are not Welcome to the party ' + guest + '!');
 } 
+
+// FizzBuzz
+var output = [];
+var count = 1;
+
+function fizzBuzz() {
+    if (count % 3 === 0 && count % 5 === 0 ) {
+        output.push('FizBuzz');
+    } 
+    else if(count % 5 === 0) {
+        output.push('Buzz');
+    } 
+    else if (count % 3 === 0) {
+        output.push('Fizz');
+    } 
+    else {
+        output.push(count);
+    }
+    count ++;
+    console.log(output);
+}
+
+// End of FizzBuzz
+
+//Bill Paying Game
+
+    //Write your code here.
+    var numberOfPeople = guests.length;
+    var randomPersonPosition = Math.random() * numberOfPeople;
+    randomPersonPosition = Math.floor(randomPersonPosition);
+    var randomPerson = guests[randomPersonPosition];
+    console.log(randomPerson + ' is going to buy lunch');
+    return randomPerson + ' is going to buy lunch';
+
+// End of game
