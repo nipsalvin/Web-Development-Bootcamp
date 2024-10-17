@@ -153,6 +153,29 @@ function fizzBuzz() {
     console.log(output);
 }
 
+//FizzBuzz with While loop
+var output = [];
+var count = 1;
+
+function fizzBuzz() {
+    while(count <= 100 ){
+        if (count % 3 === 0 && count % 5 === 0 ) {
+            output.push('FizBuzz');
+        } 
+        else if(count % 5 === 0) {
+            output.push('Buzz');
+        } 
+        else if (count % 3 === 0) {
+            output.push('Fizz');
+        } 
+        else {
+            output.push(count);
+        }
+        count ++;
+    }
+    console.log(output);
+}
+
 // End of FizzBuzz
 
 //Bill Paying Game
@@ -163,6 +186,26 @@ function fizzBuzz() {
     randomPersonPosition = Math.floor(randomPersonPosition);
     var randomPerson = guests[randomPersonPosition];
     console.log(randomPerson + ' is going to buy lunch');
-    return randomPerson + ' is going to buy lunch';
+    // return randomPerson + ' is going to buy lunch';
 
 // End of game
+
+// Beers on the wall
+var count = 100;
+function beer() {
+    while(count >= 0 ){
+        var remainder = count-1
+        // console.log(remainder);
+        if(count === 1){
+            console.log(count + ' bottle of beer on the wall, ' + count + ' bottle of beer. Take 1 down, pass it around, ' + remainder + ' bottle of beer on the wall.')
+        } 
+        else if(count > 1) {
+            console.log(count + ' bottles of beer on the wall, ' + count + ' bottles of beer. Take 1 down, pass it around, ' + remainder + ' bottles of beer on the wall.')
+        } else {
+            console.log('No more bottles of beer on the wall, no more bottles of beer. Go to the store and buy some more, 99 bottle of beer on the wall.')
+        }
+        count --;
+        }
+    }
+
+// End of Beers on the wall
