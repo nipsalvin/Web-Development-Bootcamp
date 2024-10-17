@@ -114,3 +114,20 @@ function isLeap(year) {
     }
     }
 // End of Leap Year Calculator
+
+// Working with Arrays
+var guestList = ['John', 'Jane', 'Smith', 'Michael', 'Johnson', 'David', 'Wilson', 'Olivia'];
+
+var guest = prompt('What is your name? ');
+var fLetter = guest.slice(0, 1);
+fLetter = fLetter.toUpperCase();
+var restOfName = guest.slice(1);
+restOfName = restOfName.toLowerCase();
+
+guest = fLetter + restOfName
+
+if (guestList.includes(guest)) {
+    alert('Welcome to the party ' + guest + ' !');
+} else {
+    alert('You are not Welcome to the party ' + guest + '!');
+} 
