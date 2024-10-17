@@ -93,5 +93,23 @@ if (result <= 30 ) {
     alert("Hello " + fName + ", Your chances with " + sName + " are very low at " + result + " %");
 }
 
-
 console.log("Hello " + fName + ", Your chances with " + sName + " are " + result + " %");
+
+//End of Love Calculator
+
+// Leap Year Calculator
+function isLeap(year) {    
+    if (year%4 === 0) {
+        if (year % 100 === 0 ){
+            if (year % 400 == 0){
+                console.log('Leap year')
+            } else {
+                console.log('Not Leap Year')
+            }
+        } else {
+            console.log('Leap Year.')
+        }
+    } else {
+        console.log('Not leap year.')
+    }
+    }
