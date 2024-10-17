@@ -102,14 +102,15 @@ function isLeap(year) {
     if (year%4 === 0) {
         if (year % 100 === 0 ){
             if (year % 400 == 0){
-                console.log('Leap year')
+                console.log('Leap year');
             } else {
-                console.log('Not Leap Year')
+                console.log('Not Leap Year');
             }
         } else {
-            console.log('Leap Year.')
+            console.log('Leap Year.');
         }
     } else {
-        console.log('Not leap year.')
+        console.log('Not leap year.');
     }
     }
+// End of Leap Year Calculator
