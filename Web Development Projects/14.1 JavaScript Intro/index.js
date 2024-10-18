@@ -209,3 +209,44 @@ function beer() {
     }
 
 // End of Beers on the wall
+
+// For Loop
+var output = [];
+for (var count = 1; count <= 100; count++) {
+    if (count % 3 === 0 && count % 5 === 0 ) {
+        output.push('FizzBuzz');
+    } 
+    else if(count % 5 === 0) {
+        output.push('Buzz');
+    } 
+    else if (count % 3 === 0) {
+        output.push('Fizz');
+    } 
+    else {
+        output.push(count);
+    }
+}
+console.log(output);
+
+// End of For Loop
+
+//Fibonacci Generator
+function fibonacciGenerator (n) {
+//Do NOT change any of the code above 👆
+
+    //Write your code here:
+    var output = [];
+    for (var count = 0; count < n; count++) {
+        if (count === 0) {
+            output.push(0);
+        } else if (count === 1) {
+            output.push(1);
+        } else {
+            output.push(output[count-1] + output[count-2]);
+        }
+    }       
+    return output;    
+    //Return an array of fibonacci numbers starting from 0.
+
+//Do NOT change any of the code below 👇
+}
