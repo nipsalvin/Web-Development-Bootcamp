@@ -17,7 +17,23 @@ checkBox.checked = true;
 //Method 2
 checkBox.click();
 
-// CHanging the last Item on the list
+// Changing the last Item on the list
 alert("Check out the last item on the list'");
 var listElement = document.firstElementChild.lastElementChild.querySelector('ul').lastElementChild;
 listElement.innerHTML = 'Alvin'
+
+// Selectors
+/// Getting by Element
+document.querySelector('ul'); //Returns the first element that matches <ul>
+document.querySelector('#list'); //Returns the first element that matches id="list"
+document.querySelector('.item'); //Returns the first element that matches class="item"
+/// Combining Selectors
+document.querySelector('li a'); //Returns the first element that matches <a> inside the first <li>
+document.querySelector('ul li a'); //Returns the first element that matches <a> inside the first <li> inside the first <ul>
+document.querySelector('.item a'); //Returns the first element that matches <a> inside the first class="item"
+document.querySelector('#list a'); //Returns the first element that matches <a> inside the first id="list"
+document.querySelector('#list .item'); //Returns the first element that matches class="item" inside the first id="list"
+/// Selecting multiple elements
+document.querySelectorAll('ul'); //Returns all elements that match <ul>
+document.querySelectorAll('#list'); //Returns all elements that match id="list"
+document.querySelectorAll('.item'); //Returns all elements that match class="item"
