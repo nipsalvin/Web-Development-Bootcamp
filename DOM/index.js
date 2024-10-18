@@ -1,4 +1,4 @@
-alert("Hello");
+alert("Check out the word 'Hello'");
 
 //Getting the DOM
 document.firstElementChild.firstElementChild; //!Document/HTML/head
@@ -15,5 +15,9 @@ var checkBox = document.querySelector('input');
 //Method 1
 checkBox.checked = true;
 //Method 2
-checkBox.click()
+checkBox.click();
 
+// CHanging the last Item on the list
+alert("Check out the last item on the list'");
+var listElement = document.firstElementChild.lastElementChild.querySelector('ul').lastElementChild;
+listElement.innerHTML = 'Alvin'
