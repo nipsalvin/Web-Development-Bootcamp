@@ -37,3 +37,7 @@ document.querySelector('#list .item'); //Returns the first element that matches 
 document.querySelectorAll('ul'); //Returns all elements that match <ul>
 document.querySelectorAll('#list'); //Returns all elements that match id="list"
 document.querySelectorAll('.item'); //Returns all elements that match class="item"
+
+// Changing styling of an element
+document.querySelector('h1').style.color = 'red';
+document.querySelector('.btn').style.backgroundColor = 'yellow';
