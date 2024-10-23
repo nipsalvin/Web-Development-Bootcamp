@@ -41,3 +41,12 @@ document.querySelectorAll('.item'); //Returns all elements that match class="ite
 // Changing styling of an element
 document.querySelector('h1').style.color = 'red';
 document.querySelector('.btn').style.backgroundColor = 'yellow';
+
+// Adding classes
+document.querySelector('button').classList.add('invisible');
+// Removing classes
+document.querySelector('button').classList.remove('invisible');
+// Toggling classes
+document.querySelector('button').classList.toggle('invisible');
+// Checking if a class is present
+document.querySelector('button').classList.contains('invisible');
