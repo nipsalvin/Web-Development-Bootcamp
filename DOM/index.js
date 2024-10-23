@@ -8,7 +8,7 @@ document.firstElementChild.lastElementChild; //!Document/HTML/body
 // Getting the heading
 var heading = document.firstElementChild.lastElementChild.firstElementChild;
 //Changing the heading
-heading.innerHTML = "Goodby"
+// heading.innerHTML = "Goodby"
 
 // Getting by element name
 var checkBox = document.querySelector('input');
@@ -50,3 +50,14 @@ document.querySelector('button').classList.remove('invisible');
 document.querySelector('button').classList.toggle('invisible');
 // Checking if a class is present
 document.querySelector('button').classList.contains('invisible');
+
+//Text Manipulation
+/// innerHTML returns all the HTML inside the element
+document.querySelector('h1').innerHTML
+// document.querySelector('h1').innerHTML = '<b>Hello</b>';
+/// innerText returns all the text inside the element
+document.querySelector('h1').innerText
+// document.querySelector('h1').innerText = 'Hello';
+/// textContent returns all the text inside the element
+document.querySelector('h1').textContent
+// document.querySelector('h1').textContent = 'Hello';
