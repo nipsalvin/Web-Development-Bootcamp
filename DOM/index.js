@@ -61,3 +61,9 @@ document.querySelector('h1').innerText
 /// textContent returns all the text inside the element
 document.querySelector('h1').textContent
 // document.querySelector('h1').textContent = 'Hello';
+
+// Manipulating HTML Element Attributes
+document.querySelector('a').href // Returns the value of the href attribute
+document.querySelector('a').getAttribute('href') // Returns the value of the href attribute
+document.querySelector('a').setAttribute('href', 'https://www.blacktech.co.ke'); // Sets the value of the href attribute
+document.querySelector('a').hasAttribute('href');
