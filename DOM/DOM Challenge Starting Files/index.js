@@ -66,4 +66,24 @@ document.querySelector('h1').textContent
 document.querySelector('a').href // Returns the value of the href attribute
 document.querySelector('a').getAttribute('href') // Returns the value of the href attribute
 document.querySelector('a').setAttribute('href', 'https://www.blacktech.co.ke'); // Sets the value of the href attribute
-document.querySelector('a').hasAttribute('href');
+document.querySelector('a').hasAttribute('href'); // Returns true or false if the href attribute exists
+
+//Event Listeners
+/// This is using an anonymous function
+document.querySelector('button').addEventListener('click', function() {
+    alert('I got clicked!');
+}) 
+/// This is using a named function
+document.querySelector('button').addEventListener('click', hello)
+
+function hello() {
+    alert('I got clicked!');
+}
+
+
+var buttons = document.querySelectorAll('button');
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        alert(button.innerText + ' I got clicked!');
+    })
+})
