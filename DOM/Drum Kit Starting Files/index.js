@@ -1,7 +1,7 @@
 document.querySelector("button").addEventListener("click", handleClick); 
 
 function handleClick() {
-    alert("I got clicked!");
+    console.log("I got clicked!");
 }
 
 // Adding Event Listeners to multiple buttons
@@ -17,7 +17,14 @@ function handleClick() {
 var buttons = document.querySelectorAll('.drum');
 var numberOfDrums = buttons.length;
 for (var i = 0; i < numberOfDrums; i++) {
-    buttons[i].addEventListener('click', () => {
-        alert('I got clicked!');
+    buttons[i].addEventListener('click', function(){
+        // alert(buttons[i] + 'I got clicked!');
+        console.log(this)
+        // 'this' is the element that triggered the event
+        this.style.color = "white";
     })
 }
+
+
+var audio = new Audio('sounds/tom-1.mp3');
+audio.play();
