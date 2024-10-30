@@ -66,4 +66,53 @@ document.querySelector('h1').textContent
 document.querySelector('a').href // Returns the value of the href attribute
 document.querySelector('a').getAttribute('href') // Returns the value of the href attribute
 document.querySelector('a').setAttribute('href', 'https://www.blacktech.co.ke'); // Sets the value of the href attribute
-document.querySelector('a').hasAttribute('href');
+document.querySelector('a').hasAttribute('href'); // Returns true or false if the href attribute exists
+
+//Event Listeners
+/// This is using an anonymous function
+document.querySelector('button').addEventListener('click', function() {
+    alert('I got clicked!');
+});
+/// This is using a named function
+document.querySelector('button').addEventListener('click', hello)
+
+function hello() {
+    alert('I got clicked!');
+};
+
+
+var buttons = document.querySelectorAll('button');
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        alert(button.innerText + ' I got clicked!');
+    })
+});
+
+// Event Listeners on the webpage console
+$0.addEventListener('click', function() {
+    console.log('I got clicked!');
+});
+
+function add(num1, num2) {
+    return num1 + num2
+};
+
+function multiply(num1, num2) {
+    return num1 * num2
+};
+
+function subtract(num1, num2) {
+    return num1 - num2
+};
+
+function divide(num1, num2) {
+    return num1 / num2
+};
+
+function calculator(num1, num2, operator) {
+    return operator(num1, num2)
+};
+
+/// In action:
+console.log(calculator(2, 2, multiply))
+console.log(calculator(2, 2, add))
