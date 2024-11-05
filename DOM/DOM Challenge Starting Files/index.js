@@ -174,3 +174,46 @@ for (var i = 0; i < numberOfDrums; i++) {
         }
     })
 }
+
+//Objects in JavaScript
+var bellBoy1 = {
+    name: 'John',
+    age: '28',
+    hasWorkPermit: true,
+    languages: ['English', 'Kiswahili', 'German']
+}
+
+var housKeeper1 = {
+    name: 'Mary',
+    age: '42',
+    yearsOfExperience: 10,
+    address: 'Nairobi',
+    hasWorkPermit: true,
+    languages: ['English', 'Kiswahili', 'German'],
+    certifications: ['CPR', 'First Aid', 'Wound Care'],
+    educationLevel: 'High School',
+}
+
+// Objects
+//// Constructor Functions
+function HouseKeeper(name, age, yearsOfExperience, address, hasWorkPermit, languages, certifications, educationLevel) {
+    this.name = name
+    this.age = age
+    this.yearsOfExperience = yearsOfExperience
+    this.address = address
+    this.hasWorkPermit = hasWorkPermit
+    this.languages = languages
+    this.certifications = certifications
+    this.educationLevel = educationLevel
+}
+
+function BellBoy(name, age, hasWorkPermit, languages) {
+    this.name = name
+    this.age = age
+    this.hasWorkPermit = hasWorkPermit
+    this.languages = languages
+}
+
+////Initializing Objects
+var houseKeeper1 = new HouseKeeper('Mary', 42, 10, 'Nairobi', true, ['English', 'Kiswahili', 'German'], ['CPR', 'First Aid', 'Wound Care'], 'High School');
+var bellBoy1 = new BellBoy('John', 28, true, ['English', 'Kiswahili', 'German']);
