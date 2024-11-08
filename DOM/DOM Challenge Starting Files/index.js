@@ -197,23 +197,51 @@ var housKeeper1 = {
 // Objects
 //// Constructor Functions
 function HouseKeeper(name, age, yearsOfExperience, address, hasWorkPermit, languages, certifications, educationLevel) {
-    this.name = name
-    this.age = age
-    this.yearsOfExperience = yearsOfExperience
-    this.address = address
-    this.hasWorkPermit = hasWorkPermit
-    this.languages = languages
-    this.certifications = certifications
-    this.educationLevel = educationLevel
+    this.name = name;
+    this.age = age;
+    this.yearsOfExperience = yearsOfExperience;
+    this.languages = languages;
+    this.certifications = certifications;
+    this.educationLevel = educationLevel;
+    this.clean = function(){
+        alert(this.name + 'Cleaning')
+    };
 }
 
 function BellBoy(name, age, hasWorkPermit, languages) {
-    this.name = name
-    this.age = age
-    this.hasWorkPermit = hasWorkPermit
-    this.languages = languages
+    this.name = name;
+    this.age = age;
+    this.hasWorkPermit = hasWorkPermit;
+    this.languages = languages;
+    this.moveSuitcase = function(){
+        alert('May I move your Suitcase')
+    };
 }
 
 ////Initializing Objects
-var houseKeeper1 = new HouseKeeper('Mary', 42, 10, 'Nairobi', true, ['English', 'Kiswahili', 'German'], ['CPR', 'First Aid', 'Wound Care'], 'High School');
+var houseKeeper1 = new HouseKeeper('Mary', 42, 10, ['English', 'Kiswahili', 'German'], ['CPR', 'First Aid', 'Wound Care'], 'High School');
 var bellBoy1 = new BellBoy('John', 28, true, ['English', 'Kiswahili', 'German']);
+
+//// Methods
+////// Function to be associated with the object
+function moveSuitcase() {
+    alert('May I take your suitcase?');
+    // pickUpSuitcase();
+    // moveSuitcase();
+}
+
+////// Method in the object
+var bellBoy1 = {
+    name: 'John',
+    age: '28',
+    hasWorkPermit: true,
+    languages: ['English', 'Kiswahili', 'German'],
+    moveSuitcase: function() {
+        alert('May I take your suitcase?');
+        // pickUpSuitcase();
+        // moveSuitcase();
+    }
+}
+
+////// Calling the method
+bellBoy1.moveSuitcase()
