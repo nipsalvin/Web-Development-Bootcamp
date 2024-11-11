@@ -1,7 +1,7 @@
 document.querySelector("button").addEventListener("click", handleClick); 
 
 function handleClick() {
-    alert("I got clicked!");
+    console.log("I got clicked!");
 }
 
 // Adding Event Listeners to multiple buttons
@@ -17,7 +17,55 @@ function handleClick() {
 var buttons = document.querySelectorAll('.drum');
 var numberOfDrums = buttons.length;
 for (var i = 0; i < numberOfDrums; i++) {
-    buttons[i].addEventListener('click', () => {
-        alert('I got clicked!');
+    buttons[i].addEventListener('click', function(){
+        // alert(buttons[i] + 'I got clicked!');
+        console.log(this)
+        // // 'this' is the element that triggered the event
+        // this.style.color = "white";
+        var buttonInnerHTML = this.innerHTML;
+
+        switch (buttonInnerHTML) {
+            case 'w':
+                var tom1  = new Audio('sounds/tom-1.mp3');
+                tom1 .play();                
+                break;
+
+            case 'a':
+                var tom2  = new Audio('sounds/tom-2.mp3');
+                tom2 .play();                
+                break;
+
+            case 's':
+                var tom3  = new Audio('sounds/tom-3.mp3');
+                tom3 .play();                
+                break;
+
+            case 'd':
+                var tom4  = new Audio('sounds/tom-4.mp3');
+                tom4 .play();                
+                break;
+
+            case 'j':
+                var snare  = new Audio('sounds/snare.mp3');
+                snare .play();                
+                break;
+
+            case 'k':
+                var crash  = new Audio('sounds/crash.mp3');
+                crash .play();                
+                break;
+
+            case 'l':
+                var kick  = new Audio('sounds/kick-bass.mp3');
+                kick .play();                
+                break;
+        
+            default:
+                break;
+        }
     })
 }
+
+
+var audio = new Audio('sounds/tom-1.mp3');
+audio.play();
