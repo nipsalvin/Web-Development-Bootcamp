@@ -245,3 +245,26 @@ var bellBoy1 = {
 
 ////// Calling the method
 bellBoy1.moveSuitcase()
+
+
+// Call back Functions
+function anotherAddEventListener(typeOfEvent, callbackFunction) {
+    var eventThatHappened = {
+        eventType: 'keypress',
+        key:'p',
+        durationOfKeyPress: 2,
+    }
+
+if (eventThatHappened.eventType === typeOfEvent) {
+    callbackFunction(eventThatHappened);
+}
+}
+
+anotherAddEventListener('keypress', function(event){
+    console.log(event)
+})
+
+//// On the browser console
+document.addEventListener('keypress', function(event){
+    console.log(event)
+})
