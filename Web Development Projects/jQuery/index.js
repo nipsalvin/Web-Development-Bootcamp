@@ -30,3 +30,7 @@ $('h1').addClass('big-title margin-50'); // In the same quotes separated by a sp
 
 // Checking if class exists
 $('h1').hasClass('big-title'); // Returns true or false
+
+// Manipulating text
+$('h1').text(); // Returns the text inside the element
+$('h1').text('Bye'); // Sets the text inside the element
