@@ -6,3 +6,11 @@ $('h1').css('color', 'red');
 $(document).ready(function() {
     $('h1').css('color', 'red');
 });
+
+// In jQuery, there is no difference between selecting 1 element and selecting all elements
+//// selecting all
+document.querySelectorAll('button')
+$('button')
+//// selecting 1
+document.querySelector('button')
+$('button')
