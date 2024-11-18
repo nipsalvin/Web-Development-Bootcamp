@@ -34,3 +34,9 @@ $('h1').hasClass('big-title'); // Returns true or false
 // Manipulating text
 $('h1').text(); // Returns the text inside the element
 $('h1').text('Bye'); // Sets the text inside the element
+
+// Manipulating Attributes
+$('a').attr('href'); // Returns the href attribute
+$('a').attr('href', 'https://www.blacktech.co.ke'); // Sets the href attribute
+$('img').attr('src'); // Returns the src attribute
+$('img').attr('src', 'drum.png'); // Sets the src attribute
