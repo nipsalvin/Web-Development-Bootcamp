@@ -81,3 +81,11 @@ $('input').on('keypress', function(event){
 $('h1').on('mouseover', function() {
     $('h1').css('color', 'green');
 });
+
+// Adding elements
+$('h1').before('<button>New Before</button>'); // Adds an element before the selected element, outside the element tag
+$('h1').after('<button>New After</button> <br>'); // Adds an element after the selected element, outside the element tag
+$('h1').prepend('<button>New Prepend</button>'); // Adds an element before the selected element, inside the element tag
+$('h1').append('<button>New Appended</button>'); // Adds an element after the selected element, inside the element tag
+// $('h1').remove(); // Removes the selected element
+// $('h1').empty(); // Removes the content of the selected element
