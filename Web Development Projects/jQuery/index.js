@@ -40,3 +40,44 @@ $('a').attr('href'); // Returns the href attribute
 $('a').attr('href', 'https://www.blacktech.co.ke'); // Sets the href attribute
 $('img').attr('src'); // Returns the src attribute
 $('img').attr('src', 'drum.png'); // Sets the src attribute
+
+// Event listeners with jQuery
+$('h1').click(function() {
+    $('h1').css('color', 'purple')
+});
+
+//// Event Listeners on the webpage using vanilla JS
+var buttons = document.querySelectorAll('button');
+for (var i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener('click', function() {
+        document.querySelector('h1').style.color = 'orange';
+    });
+}
+
+//// Event Listeners on the webpage using jQuery
+$('button').click(function() {
+    $('h1').css('color', 'orange');
+});
+
+$('input').keypress(function(event){
+    console.log(event.key);
+})
+//// the query 'input' selects only the input elements
+
+$(document).keypress(function(event){
+    console.log(event.key);
+    $('h1').text(event.key);
+})
+
+////Event listeners on the webpage using shorthand jQuery
+$('button').on('click', function() {
+    $('h1').css('color', 'orange');
+});
+
+$('input').on('keypress', function(event){
+    console.log(event.key);
+})
+
+$('h1').on('mouseover', function() {
+    $('h1').css('color', 'green');
+});
