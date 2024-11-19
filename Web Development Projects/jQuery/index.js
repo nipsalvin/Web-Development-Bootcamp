@@ -89,3 +89,25 @@ $('h1').prepend('<button>New Prepend</button>'); // Adds an element before the s
 $('h1').append('<button>New Appended</button>'); // Adds an element after the selected element, inside the element tag
 // $('h1').remove(); // Removes the selected element
 // $('h1').empty(); // Removes the content of the selected element
+
+// Animation
+////Using prebuilt animations
+// $('button').on('click', function() {
+//     $('h1').fadeToggle(); // Toggles the selected element
+// })
+
+// $('button').on('click', function() {
+//     $('h1').slideToggle(); // Toggles the selected element
+// })
+
+//// Using custom animations
+// $('button').on('click', function() {
+//     $('h1').animate({
+//         opacity: 0.5
+//     }, 1000); // Animates the selected element You have to use numeric values
+// })
+
+//// Chaining animations
+$('button').on('click', function () {
+    $('h1').slideUp().slideDown().animate({opacity:0.5});
+})
