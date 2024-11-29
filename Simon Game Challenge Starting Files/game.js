@@ -25,6 +25,7 @@ $('.btn').click(function () {
 
 function checkAnswer(currentLevel) {
     if (gamePattern[currentLevel] === userClickedPattern[currentLevel]) {
+        // Functionality for when the user gets the sequence right
         console.log('success');
         if (userClickedPattern.length === gamePattern.length) {
             // Call nextSequence() after a user has clicked the last button after 1000 ms delay
@@ -34,7 +35,25 @@ function checkAnswer(currentLevel) {
         }
     } else {
         console.log('wrong');
+        // Functionality for when the user gets the sequence wrong
+        playSound('wrong');
+        // Animating the body
+        var body = $('body');
+        body.addClass('game-over');
+        setTimeout(function(){
+            body.removeClass('game-over');
+        }, 200);
+        // Displaying the text
+        $("#level-title").text("Game Over, Press Any Key to Restart");
+        // Functionality to Restarting the game
+        startOver();
     }
+};
+
+function startOver(){
+    level = 0;
+    gamePattern = [];
+    started = false
 };
 
 function nextSequence () {
