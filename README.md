@@ -6,3 +6,6 @@ In this course we learn:-
   - `CSS`
   - `Bootstrap`
   - `JavaScript`
+  - `JQuery`
+  - `Node JS`
+  - `Express JS`
