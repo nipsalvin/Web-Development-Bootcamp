@@ -53,32 +53,15 @@
             </span>
           </span>
         </div>
-      <% } else if (error) { %>
-        <div class="card-info">
-          <span class="card-type">
-            <!-- Show error message -->
+      </article>
+      <% } %>
+
+      <% if (locals.error) { %>
+        <div id="tag-error" class="tag-error">
+          <!-- Show any errors that were sent from the backend -->
              <%= error %>
-          </span>
-        </div>
-        <% } else { %>
-        <div class="card-info">
-          <span class="card-type">
-            <!-- Show Activity type for debugging-->
-             Activity type
-          </span>
-          <span class="card-participants">
-            <!-- participants: Show participant number for debugging-->
-             Participants
-          </span>
         </div>
       <% } %>
-      </article>
-
-
-
-      <div id="tag-error" class="tag-error">
-        <!-- Show any errors that were sent from the backend -->
-      </div>
 
     </section>
   </div>
