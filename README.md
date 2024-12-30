@@ -10,4 +10,4 @@ In this course we learn:-
   - `Node JS`
   - `Express JS`
   - `REST APIs`
-  - `Making API Requests using __AXIOS__ `
+  - `Making API Requests using` __AXIOS__ 
