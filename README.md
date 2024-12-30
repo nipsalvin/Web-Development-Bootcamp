@@ -9,3 +9,5 @@ In this course we learn:-
   - `JQuery`
   - `Node JS`
   - `Express JS`
+  - `REST APIs`
+  - `Making API Requests using __AXIOS__ `
