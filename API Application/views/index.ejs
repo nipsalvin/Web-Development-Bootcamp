@@ -15,9 +15,11 @@
   <% if (locals.song && locals.singer && locals.background && locals.songLink) { %>
     <h1>Random <%= singer %> song</h1>
     <div class="card" style="background-image: url('<%= background %>')">
-        <a href="<%= songLink %>">
-         <p><%= songLink %></p>
-        </a>
+        <p>
+          <a href="<%= songLink %>">
+            <%= songLink %>
+          </a>
+        </p>
     </div>
     <p class="user">
       <%= song %> by <%= singer %>
