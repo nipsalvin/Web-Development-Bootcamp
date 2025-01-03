@@ -13,7 +13,7 @@
 
 <body>
   <% if (locals.song && locals.singer && locals.background && locals.songLink) { %>
-    <h1>Random <%= singer %> song</h1>
+    <h1>Random <%= singer %> song using Spotify API</h1>
     <div class="card" style="background-image: url('<%= background %>')">
         <p>
           <a href="<%= songLink %>">
