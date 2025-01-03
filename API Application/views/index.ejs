@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Spotify API</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Titan+One&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="styles/main.css">
+
+</head>
+
+<body>
+  <% if (locals.song && locals.singer && locals.background && locals.songLink) { %>
+    <h1>Random <%= singer %> song</h1>
+    <div class="card" style="background-image: url('<%= background %>')">
+        <a href="<%= songLink %>">
+         <p><%= songLink %></p>
+        </a>
+    </div>
+    <p class="user">
+      <%= song %> by <%= singer %>
+    </p>
+  <% } else { %>
+    <h1>What's your song?</h1>
+    <div class="card">
+      <p>
+        No Song Found
+      </p>
+    </div>
+    <p class="user">
+      No Song Found
+    </p>
+  <% } %>
+
+
+</body>
+
+</html>
