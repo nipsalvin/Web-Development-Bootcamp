@@ -29,7 +29,7 @@ let songLink;
 // 5. Use axios to get a random Track and pass it to index.ejs to display the Singer and the Name of the Track.
 app.get("/", async (req, res) => {
     try {
-        // Using a predefined artist_id to get a random track
+        // Using a predefined artist_id (Nyashinski) to get a random track
         const artist_id = "7KY9NaOVRmptl8vlpVomi6"
         // Using the top-tracks endpoint to get the top tracks of the artist
         const endpoint = URL + "/artists/" + artist_id + "/top-tracks"
