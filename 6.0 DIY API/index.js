@@ -36,6 +36,19 @@ app.get("/filter", async(req, res) => {
 });
 
 //4. POST a new joke
+app.post("/add", async(req, res) => {
+  // We are using req.body to get the joke text and joke type from the request body(body-parser)
+  const jokeText = req.body.text;
+  const jokeType = req.body.type;
+  const newJoke = {
+    id: jokes.length + 1,
+    jokeText: jokeText,
+    jokeType: jokeType,
+  };
+  console.log(jokes.slice(-1));
+  jokes.push(newJoke);
+  res.json(newJoke);
+});
 
 //5. PUT a joke
 
