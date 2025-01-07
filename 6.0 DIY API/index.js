@@ -8,7 +8,6 @@ const masterKey = "4VGP2DN-6EWM4SJ-N6FGRHV-Z3PR3TT";
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //1. GET a random joke
-
 app.get("/random", async(req, res) => {
   const jokeIndex = Math.floor(Math.random() * jokes.length);
   // res.json returns a JSON response that is converted from a JavaScript object
@@ -16,9 +15,9 @@ app.get("/random", async(req, res) => {
 });
 
 //2. GET a specific joke
-
 app.get("/jokes/:id", async(req, res) => {
-  // parseInt converts a string to an integer
+  // parseInt converts a string to an integer.
+  // We are using req.params to get the joke id from the URL as a path parameter
   const jokeId = parseInt(req.params.id);
   // .find returns the first element in the array that matches the condition
   const foundJoke = jokes.find((joke) => joke.id === jokeId);
@@ -26,6 +25,12 @@ app.get("/jokes/:id", async(req, res) => {
 });
 
 //3. GET a jokes by filtering on the joke type
+app.get("/filter", async(req, res) => {
+  // We are using req.query to get the jokeType from the URL as a query parameter
+  const jokeType = req.query.type;
+  const filteredJokes = jokes.filter((joke) => joke.jokeType === jokeType);
+  res.json(filteredJokes);
+});
 
 //4. POST a new joke
 
