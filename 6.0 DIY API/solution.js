@@ -1,9 +1,12 @@
 import express from "express";
 import bodyParser from "body-parser";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 const port = 3000;
-const masterKey = "4VGP2DN-6EWM4SJ-N6FGRHV-Z3PR3TT";
+const masterKey = process.env.MASTER_KEY;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
