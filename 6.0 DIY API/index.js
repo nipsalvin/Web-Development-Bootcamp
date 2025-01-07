@@ -17,6 +17,14 @@ app.get("/random", async(req, res) => {
 
 //2. GET a specific joke
 
+app.get("/jokes/:id", async(req, res) => {
+  // parseInt converts a string to an integer
+  const jokeId = parseInt(req.params.id);
+  // .find returns the first element in the array that matches the condition
+  const foundJoke = jokes.find((joke) => joke.id === jokeId);
+  res.json(foundJoke);
+});
+
 //3. GET a jokes by filtering on the joke type
 
 //4. POST a new joke
