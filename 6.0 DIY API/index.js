@@ -18,7 +18,7 @@ app.get("/random", async(req, res) => {
 });
 
 //2. GET a specific joke
-app.get("/jokes/:id", async(req, res) => {
+app.get("/jokes/:id", (req, res) => {
   // parseInt converts a string to an integer.
   // We are using req.params to get the joke id from the URL as a path parameter
   const jokeId = parseInt(req.params.id);
@@ -28,7 +28,7 @@ app.get("/jokes/:id", async(req, res) => {
 });
 
 //3. GET a jokes by filtering on the joke type
-app.get("/filter", async(req, res) => {
+app.get("/filter", (req, res) => {
   // We are using req.query to get the jokeType from the URL as a query parameter
   const jokeType = req.query.type;
   const filteredJokes = jokes.filter((joke) => joke.jokeType === jokeType);
@@ -36,7 +36,7 @@ app.get("/filter", async(req, res) => {
 });
 
 //4. POST a new joke
-app.post("/add", async(req, res) => {
+app.post("/add", (req, res) => {
   // We are using req.body to get the joke text and joke type from the request body(body-parser)
   const jokeText = req.body.text;
   const jokeType = req.body.type;
