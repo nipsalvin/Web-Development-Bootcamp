@@ -51,6 +51,25 @@ app.post("/add", async(req, res) => {
 });
 
 //5. PUT a joke
+app.put("/jokes/:id", (req, res) => {
+  const jokeId = parseInt(req.params.id);
+  // Method 1
+  const jokeText = req.body.text;
+  const jokeType = req.body.type;
+  const joke = jokes.find((joke) => joke.id === jokeId);
+  joke.jokeText = jokeText;
+  joke.jokeType = jokeType;
+  res.json(joke);
+  // // Method 2
+  // const replacementJoke = {
+  //   id: jokeId,
+  //   jokeText: req.body.text,
+  //   jokeType: req.body.type,
+  // };
+  // const searchIndex = jokes.findIndex((joke) => joke.id === jokeId);
+  // jokes[searchIndex] = replacementJoke;
+  // res.json(replacementJoke);
+});
 
 //6. PATCH a joke
  
