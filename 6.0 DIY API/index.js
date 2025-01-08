@@ -11,7 +11,7 @@ const masterKey = process.env.MASTER_KEY;
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //1. GET a random joke
-app.get("/random", async(req, res) => {
+app.get("/random", (req, res) => {
   const jokeIndex = Math.floor(Math.random() * jokes.length);
   // res.json returns a JSON response that is converted from a JavaScript object
   res.json(jokes[jokeIndex]);
