@@ -113,6 +113,18 @@ app.delete("/jokes/:id", (req, res) => {
 });
 
 //8. DELETE All jokes
+app.delete("/all", (req, res) => {
+  // console.log(req.rawHeaders);
+  const userKey = req.query.key;
+  if (userKey === masterKey) {
+    jokes = [];
+    res.sendStatus(200);
+  } else {
+    res
+      .status(403)
+      .json({ error: "You do not have permission to perform this action." });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Successfully started server on port ${port}.`);
