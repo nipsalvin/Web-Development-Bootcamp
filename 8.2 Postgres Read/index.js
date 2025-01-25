@@ -29,6 +29,7 @@ db.query("SELECT * FROM flags", (err, res) => {
     quiz = res.rows;
     console.log(quiz);
   }
+  db.end();
 });
 
 let totalCorrect = 0;
@@ -51,9 +52,9 @@ app.get("/", async (req, res) => {
 app.post("/submit", (req, res) => {
   let answer = req.body.answer.trim();
   let isCorrect = false;
-  console.log('Cyrrent Question Capital: ' + currentQuestion.capital);
+  console.log('Current Question name: ' + currentQuestion.name);
   console.log('Answer: ' + answer);
-  if (currentQuestion.capital.toLowerCase() === answer.toLowerCase()) {
+  if (currentQuestion.name.toLowerCase() === answer.toLowerCase()) {
     totalCorrect++;
     console.log(totalCorrect);
     isCorrect = true;
