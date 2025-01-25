@@ -1,14 +1,40 @@
 import express from "express";
 import bodyParser from "body-parser";
+import pg from "pg";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 const port = 3000;
+
+const db = new pg.Client(
+  {
+    user: "postgres",
+    host: "localhost",
+    database: "world",
+    password: process.env.POSTGRES_PW,
+    port: 5432
+  }
+);
+
+db.connect();
 
 let quiz = [
   { country: "France", capital: "Paris" },
   { country: "United Kingdom", capital: "London" },
   { country: "United States of America", capital: "New York" },
 ];
+
+db.query("SELECT * FROM capitals", (err, res) => {
+  if (err) {
+    console.error("Error executing query", err.stack);
+  } else {
+    quiz = res.rows;
+  }
+  db.end();
+});
+
 
 let totalCorrect = 0;
 
@@ -28,7 +54,7 @@ app.get("/", async (req, res) => {
 
 // POST a new post
 app.post("/submit", (req, res) => {
-  let answer = req.body.answer.trim();
+  let answer = req.body.answer.trim(); // .trim() removes whitespace from both ends of a string
   let isCorrect = false;
   if (currentQuestion.capital.toLowerCase() === answer.toLowerCase()) {
     totalCorrect++;
