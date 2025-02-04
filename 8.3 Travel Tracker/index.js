@@ -45,7 +45,7 @@ app.post("/add", async (req, res) => {
 
   try{
     const result = await db.query(
-    "SELECT country_code FROM countries WHERE country_name = $1",
+    "SELECT country_code FROM countries WHERE country_name LIKE '%' || $1 || '%'",
     [input]
   );
 
@@ -57,11 +57,16 @@ app.post("/add", async (req, res) => {
           "INSERT INTO visited_countries (country_code) VALUES($1)",
           [country_code]
         );
-        res.redirect("index.ejs");
+        const countries = await checkVisisted();
+        res.render("index.ejs", {
+          countries: countries,
+          total: countries.length,
+          success: "Country added"
+        });
       } catch (err) {
         console.log(err);
         const countries = await checkVisisted();
-        res.redirect("index.ejs", {
+        res.render("index.ejs", {
           countries: countries,
           total: countries.length,
           error: "Country already visited"
@@ -71,7 +76,7 @@ app.post("/add", async (req, res) => {
   } catch (err) 
     {console.log(err)}
     const countries = await checkVisisted();
-    res.redirect("index.ejs", {
+    res.render("index.ejs", {
       countries: countries,
       total: countries.length,
       error: "Country not found"
