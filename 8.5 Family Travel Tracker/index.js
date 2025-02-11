@@ -1,6 +1,9 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 const port = 3000;
@@ -9,8 +12,8 @@ const db = new pg.Client({
   user: "postgres",
   host: "localhost",
   database: "world",
-  password: "123456",
-  port: 5432,
+  password: process.env.POSTGRES_PW,
+  port: 5432
 });
 db.connect();
 
@@ -20,25 +23,37 @@ app.use(express.static("public"));
 let currentUserId = 1;
 
 let users = [
-  { id: 1, name: "Angela", color: "teal" },
+  { id: 1, name: "Nips", color: "teal" },
   { id: 2, name: "Jack", color: "powderblue" },
 ];
 
 async function checkVisisted() {
-  const result = await db.query("SELECT country_code FROM visited_countries");
+  const result = await db.query(
+    "SELECT country_code FROM visited_countries JOIN users ON users.id = user_id WHERE user_id = $1; ",
+    [currentUserId]
+  );
   let countries = [];
   result.rows.forEach((country) => {
     countries.push(country.country_code);
   });
   return countries;
 }
+
+async function getCurrentUser() {
+  const result = await db.query("SELECT * FROM users");
+  users = result.rows;
+  console.log(users);
+  return users.find((user) => user.id == currentUserId);
+}
+
 app.get("/", async (req, res) => {
   const countries = await checkVisisted();
+  const currentUser = await getCurrentUser();
   res.render("index.ejs", {
     countries: countries,
     total: countries.length,
     users: users,
-    color: "teal",
+    color: currentUser.color,
   });
 });
 app.post("/add", async (req, res) => {

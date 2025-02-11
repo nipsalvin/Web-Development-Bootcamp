@@ -1,6 +1,9 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 const port = 3000;
@@ -9,8 +12,8 @@ const db = new pg.Client({
   user: "postgres",
   host: "localhost",
   database: "world",
-  password: "123456",
-  port: 5432,
+  password: process.env.POSTGRES_PW,
+  port: 5432
 });
 db.connect();
 
@@ -20,7 +23,7 @@ app.use(express.static("public"));
 let currentUserId = 1;
 
 let users = [
-  { id: 1, name: "Angela", color: "teal" },
+  { id: 1, name: "Nips", color: "teal" },
   { id: 2, name: "Jack", color: "powderblue" },
 ];
 
