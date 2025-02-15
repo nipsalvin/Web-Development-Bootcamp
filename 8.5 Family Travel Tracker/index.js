@@ -27,7 +27,7 @@ let users = [
   { id: 2, name: "Jack", color: "powderblue" },
 ];
 
-async function checkVisisted() {
+async function checkVisited() {
   const result = await db.query(
     "SELECT country_code FROM visited_countries JOIN users ON users.id = user_id WHERE user_id = $1; ",
     [currentUserId]
@@ -48,7 +48,7 @@ async function getCurrentUser() {
 }
 
 app.get("/", async (req, res) => {
-  const countries = await checkVisisted();
+  const countries = await checkVisited();
   const currentUser = await getCurrentUser();
   // console.log(currentUser)
   res.render("index.ejs", {
@@ -68,6 +68,15 @@ app.post("/add", async (req, res) => {
       [input.toLowerCase()]
     );
 
+    if (result.rows.length === 0){
+      throw new Error("Country does not exist, try again.")
+    };
+
+    if (result.rows.length > 1){
+      throw new Error(`Multiple countries that contain '${input}', try again.`)
+    };
+
+    console.log(result.rows);
     const data = result.rows[0];
     const countryCode = data.country_code;
     console.log(countryCode);
@@ -80,9 +89,26 @@ app.post("/add", async (req, res) => {
       res.redirect("/");
     } catch (err) {
       console.log(err);
+      const countries = await checkVisited();
+      res.render("index.ejs", {
+        countries: countries,
+        total: countries.length,
+        error: "Error inserting country, try again.",
+      });
     }
   } catch (err) {
     console.log(err);
+    const countries = await checkVisited();
+    const currentUser = await getCurrentUser();
+    console.log('Error is ' + err.message)
+    res.render("index.ejs", {
+      users: users,
+      color: currentUser.color,
+      countries: countries,
+      total: countries.length,
+      error: err.message,
+      }
+    );
   }
 });
 app.post("/user", async (req, res) => {
@@ -101,7 +127,7 @@ app.post("/new", async (req, res) => {
   const color = req.body.color;
   try {
     const result = await db.query(
-      "INSERT INTO users (name, color) VALUES($1, $2)",
+      "INSERT INTO users (name, color) VALUES($1, $2) RETURNING *",
       [name, color]
     );
     console.log(result.rows);
