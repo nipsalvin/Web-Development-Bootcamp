@@ -44,7 +44,8 @@ async function getCurrentUser() {
   const result = await db.query("SELECT * FROM users");
   users = result.rows;
   console.log(`Function getCurrentUser`, currentUserId)
-  return users.find((user) => user.id == currentUserId);
+  const currentUser = users.find((user) => user.id == currentUserId);
+  return currentUser;
 }
 
 app.get("/", async (req, res) => {
