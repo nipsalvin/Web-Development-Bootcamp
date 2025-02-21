@@ -33,14 +33,19 @@ app.get("/", (req, res) => {
 });
 
 app.post("/add", (req, res) => {
+  // This request is supposed to handle adding a new item to the list
   const item = req.body.newItem;
   items.push({ title: item });
   res.redirect("/");
 });
 
-app.post("/edit", (req, res) => {});
+app.post("/edit", (req, res) => {
+  // This request is supposed to handle editing an item from the list
+});
 
-app.post("/delete", (req, res) => {});
+app.post("/delete", (req, res) => {
+  // This request is supposed to handle deleting an item from the list
+});
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
