@@ -41,7 +41,7 @@ async function checkVisited() {
 }
 
 async function getCurrentUser() {
-  const result = await db.query("SELECT * FROM users");
+  const result = await db.query("SELECT * FROM users ORDER BY name ASC;");
   users = result.rows;
   console.log(`Function getCurrentUser`, currentUserId)
   const currentUser = users.find((user) => user.id == currentUserId);

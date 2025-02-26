@@ -120,3 +120,20 @@ SELECT *
 FROM visited_countries
 JOIN users
 ON users.id = user_id;
+
+-- Update Data in Table --
+UPDATE users
+SET name='Nips'
+WHERE id = 1;
+
+-- Order By --
+SELECT * 
+FROM users 
+ORDER BY id ASC;
+
+-- Delete Data --
+DELETE FROM visited_countries
+WHERE id = 1;
+
+DELETE FROM visited_countries
+WHERE user_id = 1 AND country_code = 'FR';
