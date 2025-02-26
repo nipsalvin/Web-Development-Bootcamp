@@ -28,7 +28,7 @@ let items = [
 app.get("/", async (req, res) => {
   // This request is supposed to render the list of items
   try {
-    const result = await db.query("SELECT * FROM ITEMS ORDER BY id ASC");
+    const result = await db.query("SELECT * FROM ITEMS WHERE done = false ORDER BY id ASC");
     // console.log(result);
     items = result.rows;
   } catch (err) {
@@ -70,7 +70,8 @@ app.post("/delete", async (req, res) => {
   const id = req.body.deleteItemId;
   console.log(id);
   try{
-    await db.query("DELETE FROM items WHERE id = $1", [id]);
+    // await db.query("DELETE FROM items WHERE id = $1", [id]);
+    await db.query("UPDATE items SET done = TRUE WHERE id = $1", [id]);
     res.redirect("/");
   } catch (err) {
     console.log(err);

@@ -5,3 +5,5 @@ CREATE TABLE items (
 
 INSERT INTO items (title) VALUES ('Buy milk'), ('Finish homework');
 
+ALTER TABLE items
+ADD COLUMN done BOOLEAN DEFAULT FALSE;
