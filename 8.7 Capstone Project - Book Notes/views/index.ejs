@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Notes</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Book Notes</h1>
+        <!-- I am passing a dictionary with JSON called 'book_data' and I want to loop through all keys and values -->
+        <% for (let [key, value] of Object.entries(book_data)) { %>
+            <div class="book">
+                <h2><%= key %></h2>
+                <p><%= value %></p>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>
