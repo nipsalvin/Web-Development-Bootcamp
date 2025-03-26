@@ -19,17 +19,25 @@ const db = new pg.Client({
 db.connect();
 
 app.get("/", async (req, res) => {
-  try{
-    // TODO get book data from OpenLibrary API using inputted ISBN or name
-    const isbn = 9780385533225;
-    const url = "https://openlibrary.org/isbn/"+isbn+".json";
-    const response = await axios.get("https://bored-api.appbrewery.com/random");
-    const result = response.data;
-    res.render("index.ejs", { book_data: result });
-  } catch (error) {}
+  try {
+    const result = await db.query("SELECT * FROM BOOK ORDER BY id ASC");
+    const book_data = result.rows;
+    console.log("Book data: ", book_data);
+    const isbn = book_data[0].isbn; // Example ISBN
+    console.log("ISBN: ", isbn);
+
+    // Construct the cover URL
+    const coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`;
+    console.log("Cover URL:", coverUrl);
+
+    // Pass the cover URL to the EJS template
+    res.render("index.ejs", { book_data: { coverUrl } });
+  } catch (error) {
+    console.error(error);
+    res.render("index.ejs", { error: error.message });
+  }
 });
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
   });
-  
