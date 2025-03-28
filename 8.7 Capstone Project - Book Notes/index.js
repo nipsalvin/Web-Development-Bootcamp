@@ -18,13 +18,24 @@ const db = new pg.Client({
 });
 db.connect();
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
+
 app.get("/", async (req, res) => {
   try {
-    const result = await db.query("SELECT * FROM BOOK ORDER BY id ASC");
+    const result = await db.query(`
+      SELECT BOOK.*, 
+             CONCAT(AUTHOR.first_name, ' ', AUTHOR.last_name) AS author_name
+      FROM BOOK
+      JOIN AUTHOR ON BOOK.author_id = AUTHOR.id
+      ORDER BY BOOK.id ASC
+    `);
     const book_data = result.rows;
     console.log("Book data: ", book_data);
     const isbn = book_data[0].isbn; // Example ISBN
     console.log("ISBN: ", isbn);
+    console.log("Author: ", book_data[0].author_name);
+    console.log("Rating: ", book_data[0].rating);
 
     // Construct the cover URL
     const coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`;
@@ -36,6 +47,10 @@ app.get("/", async (req, res) => {
     console.error(error);
     res.render("index.ejs", { error: error.message });
   }
+});
+
+app.get("/add-book", (req, res) => {
+  res.render("add-book.ejs");
 });
 
 app.listen(port, () => {
