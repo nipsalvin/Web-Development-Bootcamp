@@ -10,16 +10,27 @@
     <div class="container">
         <h1 class="text-center mb-4">Book Read</h1>
         <!-- I am passing a dictionary with JSON called 'book_data' and I want to loop through all keys and values -->
-        <% if (book_data && book_data.coverUrl) { %>
-            <div class="card mx-auto" style="width: 18rem;">
-                <img src="<%= book_data.coverUrl %>" alt="Book Cover">
-                <br>
-                <div class="card-body">
-                    <h5 class="card-title"> <%= book_data.title %> </h5>
-                    <p class="card-text"> <%= book_data.author_name %> </p>
-                    <p class="card-text"> <%= book_data.rating %> </p>
+        <% if (book_data && book_data.length > 0) { %>
+            <% book_data.forEach(book => { %>
+                <div class="row mb-4 align-items-center">
+                    <!-- Image Column -->
+                    <div class="col-md-4 text-center">
+                        <% if (book.coverUrl) { %>
+                            <img src="<%= book.coverUrl %>" class="img-fluid rounded" alt="Book Cover">
+                        <% } %>
+                    </div>
+                    <!-- Text Column -->
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= book.title %></h5>
+                            <p class="card-text"><strong>Author:</strong> <%= book.author_name %></p>
+                            <p class="card-text"><strong>Rating:</strong> <%= book.rating %></p>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            <% }); %>
+        <% } else { %>
+            <p class="text-center text-danger">No books found.</p>
         <% } %>
     </div>
 </body>

@@ -32,17 +32,21 @@ app.get("/", async (req, res) => {
     `);
     const book_data = result.rows;
     console.log("Book data: ", book_data);
-    const isbn = book_data[0].isbn; // Example ISBN
+    const isbn = book_data[1].isbn; // Example ISBN
     console.log("ISBN: ", isbn);
-    console.log("Author: ", book_data[0].author_name);
-    console.log("Rating: ", book_data[0].rating);
 
     // Construct the cover URL
     const coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`;
     console.log("Cover URL:", coverUrl);
+    console.log("Book data with cover URLs: ", book_data);
+
+    // Add coverUrl to each book object
+    book_data.forEach(book => {
+      book.coverUrl = `https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg`;
+    });
 
     // Pass the cover URL to the EJS template
-    res.render("index.ejs", { book_data: { coverUrl } });
+    res.render("index.ejs", { book_data: book_data, coverUrl: coverUrl });
   } catch (error) {
     console.error(error);
     res.render("index.ejs", { error: error.message });
