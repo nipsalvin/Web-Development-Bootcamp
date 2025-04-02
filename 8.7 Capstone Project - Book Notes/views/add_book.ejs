@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Book</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Add a New Book</h1>
+        <form action="/add_book" method="POST" class="p-4 border rounded shadow-sm bg-light">
+            <div class="mb-3">
+                <!-- <label for="bookTitle" class="form-label">Book Title</label> -->
+                <input type="text" id="bookTitle" name="bookTitle" class="form-control" placeholder="Enter book title" autocomplete="off" autofocus="true" />
+            </div>
+            <div class="mb-3">
+                <!-- <label for="bookAuthorFirstName" class="form-label">Author First Name</label> -->
+                <input type="text" id="bookAuthorFirstName" name="bookAuthorFirstName" class="form-control" placeholder="Author's first name" autocomplete="off" />
+            </div>
+            <div class="mb-3">
+                <!-- <label for="bookAuthorLastName" class="form-label">Author Last Name</label> -->
+                <input type="text" id="bookAuthorLastName" name="bookAuthorLastName" class="form-control" placeholder="Author's last name" autocomplete="off" />
+            </div>
+            <div class="mb-3">
+                <!-- <label for="bookRating" class="form-label">Book Rating</label> -->
+                <input type="number" id="bookRating" name="bookRating" class="form-control" placeholder="Enter book rating (1-5)" autocomplete="off" min="1" max="5" />
+            </div>
+            <div class="mb-3">
+                <!-- <label for="bookDateRead" class="form-label">Date Read</label> -->
+                <input type="date" id="bookDateRead" name="bookDateRead" class="form-control" placeholder="YYYY-MM-DD" autocomplete="off" />
+            </div>
+            <div class="mb-3">
+                <!-- <label for="bookIsbn" class="form-label">Book ISBN</label> -->
+                <input type="text" id="bookIsbn" name="bookIsbn" class="form-control" placeholder="Enter book ISBN" autocomplete="off" />
+            </div>
+            <div class="text-center">
+                <button class="btn btn-primary" type="submit">Add Book</button>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

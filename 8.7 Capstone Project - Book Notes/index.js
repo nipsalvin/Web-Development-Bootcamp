@@ -32,29 +32,60 @@ app.get("/", async (req, res) => {
     `);
     const book_data = result.rows;
     console.log("Book data: ", book_data);
-    const isbn = book_data[1].isbn; // Example ISBN
-    console.log("ISBN: ", isbn);
+    // const isbn = book_data[1].isbn; // Example ISBN
+    // console.log("ISBN: ", isbn);
 
-    // Construct the cover URL
-    const coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`;
-    console.log("Cover URL:", coverUrl);
-    console.log("Book data with cover URLs: ", book_data);
-
+    // // Construct the cover URL
+    // const coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`;
+    // console.log("Cover URL:", coverUrl);
+    
     // Add coverUrl to each book object
     book_data.forEach(book => {
       book.coverUrl = `https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg`;
     });
+    console.log("Book data with cover URLs: ", book_data);
 
     // Pass the cover URL to the EJS template
-    res.render("index.ejs", { book_data: book_data, coverUrl: coverUrl });
+    res.render("index.ejs", { book_data: book_data});
   } catch (error) {
     console.error(error);
     res.render("index.ejs", { error: error.message });
   }
 });
 
-app.get("/add-book", (req, res) => {
-  res.render("add-book.ejs");
+app.get("/add_book", (req, res) => {
+  res.render("add_book.ejs");
+});
+
+app.post("/add_book", async (req, res) => {
+  // This is to handle the form submission for adding a new book
+  console.log("Form submitted");
+  console.log(req.body);
+  try {
+    await db.query(`
+      INSERT INTO author (first_name, last_name)
+      VALUES ($1, $2)
+      RETURNING id;
+    `, [req.body.author_first_name, req.body.author_last_name]);
+    console.log(res.rows[0])
+    const authorId = res.rows[0].id;
+    await db.query(`
+      INSERT INTO book (title, rating, date_read, isbn, author_id)
+      VALUES ($1, $2, $3, $4, $5);
+      `[
+        req.body.title,
+        req.body.rating,
+        req.body.date_read,
+        req.body.isbn,
+        authorId
+      ]);
+    alert("Book added successfully!");
+    res.redirect("/");
+  } catch (err) {
+    console.error("Error adding book:", err);
+    res.status(500).send("An error occurred while adding the book.");
+  };
+  res.render("add_book.ejs");
 });
 
 app.listen(port, () => {

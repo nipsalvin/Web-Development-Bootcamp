@@ -12,5 +12,6 @@ CREATE TABLE book (
     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
     isbn VARCHAR(13) NOT NULL,
     date_read DATE,
-    author_id INTEGER REFERENCES author(id) ON DELETE CASCADE
+    author_id INTEGER REFERENCES author(id) ON DELETE CASCADE,
+    is_deleted BOOLEAN DEFAULT FALSE
 );

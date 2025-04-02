@@ -8,7 +8,11 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mb-4">Book Read</h1>
+        <div class="header">
+            <h1 class="text-center mb-4">Book Read</h1>
+            <!-- Link to the add book page -->
+            <a href="/add_book" class="btn btn-primary">Add Book</a>
+        </div>
         <!-- I am passing a dictionary with JSON called 'book_data' and I want to loop through all keys and values -->
         <% if (book_data && book_data.length > 0) { %>
             <% book_data.forEach(book => { %>
@@ -25,6 +29,8 @@
                             <h5 class="card-title"><%= book.title %></h5>
                             <p class="card-text"><strong>Author:</strong> <%= book.author_name %></p>
                             <p class="card-text"><strong>Rating:</strong> <%= book.rating %></p>
+                            <p class="card-text"><strong>Date Read:</strong> <%= book.date_read.getFullYear()
+                                %></p>
                         </div>
                     </div>
                 </div>
