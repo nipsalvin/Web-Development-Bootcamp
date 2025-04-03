@@ -61,25 +61,32 @@ app.post("/add_book", async (req, res) => {
   // This is to handle the form submission for adding a new book
   console.log("Form submitted");
   console.log(req.body);
+  const first_name = req.body.bookAuthorFirstName;
+  const last_name = req.body.bookAuthorLastName;
+  const title = req.body.bookTitle;
+  const rating = req.body.bookRating;
+  const date_read = req.body.bookDateRead;
+  const isbn = req.body.bookIsbn;
+  console.log("First name: ", first_name); 
+  console.log("Last name: ", last_name);
+  console.log("Title: ", title);
+  console.log("Rating: ", rating);
+  console.log("Date read: ", date_read);
+  console.log("ISBN: ", isbn);
+
   try {
-    await db.query(`
+    const result = await db.query(`
       INSERT INTO author (first_name, last_name)
       VALUES ($1, $2)
-      RETURNING id;
-    `, [req.body.author_first_name, req.body.author_last_name]);
-    console.log(res.rows[0])
-    const authorId = res.rows[0].id;
+      RETURNING id;`,
+      [first_name, last_name]);
+    console.log(result.rows[0].id);
+    const authorId = result.rows[0].id;
     await db.query(`
       INSERT INTO book (title, rating, date_read, isbn, author_id)
-      VALUES ($1, $2, $3, $4, $5);
-      `[
-        req.body.title,
-        req.body.rating,
-        req.body.date_read,
-        req.body.isbn,
-        authorId
-      ]);
-    alert("Book added successfully!");
+      VALUES ($1, $2, $3, $4, $5);`,
+      [title, rating, date_read, isbn, authorId]);
+    console.log("Book added successfully!");
     res.redirect("/");
   } catch (err) {
     console.error("Error adding book:", err);
