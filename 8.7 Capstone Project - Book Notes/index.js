@@ -31,19 +31,12 @@ app.get("/", async (req, res) => {
       ORDER BY BOOK.id ASC
     `);
     const book_data = result.rows;
-    console.log("Book data: ", book_data);
-    // const isbn = book_data[1].isbn; // Example ISBN
-    // console.log("ISBN: ", isbn);
-
-    // // Construct the cover URL
-    // const coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`;
-    // console.log("Cover URL:", coverUrl);
-    
+    // console.log("Book data: ", book_data);    
     // Add coverUrl to each book object
     book_data.forEach(book => {
       book.coverUrl = `https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg`;
     });
-    console.log("Book data with cover URLs: ", book_data);
+    // console.log("Book data with cover URLs: ", book_data);
 
     // Pass the cover URL to the EJS template
     res.render("index.ejs", { book_data: book_data});
@@ -75,13 +68,27 @@ app.post("/add_book", async (req, res) => {
   console.log("ISBN: ", isbn);
 
   try {
-    const result = await db.query(`
-      INSERT INTO author (first_name, last_name)
-      VALUES ($1, $2)
-      RETURNING id;`,
-      [first_name, last_name]);
-    console.log(result.rows[0].id);
-    const authorId = result.rows[0].id;
+    // Check if the author already exists
+    const authorCheck = await db.query(
+      `SELECT id FROM author WHERE first_name = $1 AND last_name = $2`,
+      [first_name, last_name]
+    );
+    let authorId;
+    if (authorCheck.rows.length > 0) {
+      // Author exists, get their ID
+      authorId = authorCheck.rows[0].id;
+      console.log("Author already exists with ID:", authorId);
+    } else {
+      // Author does not exist, insert a new author
+      const authorResult = await db.query(
+        `INSERT INTO author (first_name, last_name)
+         VALUES ($1, $2)
+         RETURNING id;`,
+        [first_name, last_name]
+      );
+      authorId = authorResult.rows[0].id;
+      console.log("New author added with ID:", authorId);
+    }
     await db.query(`
       INSERT INTO book (title, rating, date_read, isbn, author_id)
       VALUES ($1, $2, $3, $4, $5);`,
@@ -92,7 +99,23 @@ app.post("/add_book", async (req, res) => {
     console.error("Error adding book:", err);
     res.status(500).send("An error occurred while adding the book.");
   };
-  res.render("add_book.ejs");
+  // res.render("add_book.ejs");
+});
+
+app.post("/delete_book", async (req, res) => {
+  // This is to handle the form submission for deleting a book
+  console.log("Form submitted");
+  console.log(req.body);
+  const bookId = req.body.book_id;
+  console.log("Book ID: ", bookId);
+  try {
+    await db.query(`DELETE FROM book WHERE id = $1;`, [bookId]);
+    console.log("Book deleted successfully!");
+    res.redirect("/");
+  } catch (err) {
+    console.error("Error deleting book:", err);
+    res.status(500).send("An error occurred while deleting the book.");
+  };
 });
 
 app.listen(port, () => {
