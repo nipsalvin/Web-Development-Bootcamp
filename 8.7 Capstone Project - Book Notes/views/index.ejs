@@ -46,6 +46,10 @@
                                 <input type="hidden" name="book_id" value="<%= book.id %>">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
+                            <br>
+                            <a href="/book/<%= book.id %>" class="btn btn-primary">
+                                View Book
+                            </a>
                         </div>
                     </div>
                 <% }); %>

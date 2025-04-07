@@ -118,6 +118,27 @@ app.post("/delete_book", async (req, res) => {
   };
 });
 
+app.get("/book/:id", async (req, res) => {
+  const bookId = req.params.id;
+  console.log("Book ID: ", bookId);
+  try {
+    const result = await db.query(`
+      SELECT BOOK.*, 
+             CONCAT(AUTHOR.first_name, ' ', AUTHOR.last_name) AS author_name
+      FROM BOOK
+      JOIN AUTHOR ON BOOK.author_id = AUTHOR.id
+      WHERE BOOK.id = $1
+    `, [bookId]);
+    const book_data = result.rows[0];
+    book_data.coverUrl = `https://covers.openlibrary.org/b/isbn/${book_data.isbn}-M.jpg`;
+    console.log("Book data: ", book_data);
+    res.render("book.ejs", { book_data: book_data });
+  } catch (error) {
+    console.error(error);
+    res.render("book.ejs", { error: error.message });
+  }
+});
+
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
   });
