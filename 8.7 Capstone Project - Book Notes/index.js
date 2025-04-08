@@ -60,12 +60,22 @@ app.post("/add_book", async (req, res) => {
   const rating = req.body.bookRating;
   const date_read = req.body.bookDateRead;
   const isbn = req.body.bookIsbn;
+  const comments = req.body.bookComments;
+  const notes = req.body.bookNotes;
+
   console.log("First name: ", first_name); 
   console.log("Last name: ", last_name);
   console.log("Title: ", title);
   console.log("Rating: ", rating);
   console.log("Date read: ", date_read);
   console.log("ISBN: ", isbn);
+  console.log("Comments: ", comments);
+  console.log("Notes: ", notes);
+  // Validate the input
+  if (!first_name || !last_name || !title || !rating || !date_read || !isbn) {
+    console.error("Missing required fields");
+    return res.render("add_book.ejs", { error: "Please fill in all required fields." });
+  }
 
   try {
     // Check if the author already exists
