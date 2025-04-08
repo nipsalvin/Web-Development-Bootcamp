@@ -14,4 +14,6 @@ CREATE TABLE book (
     date_read DATE,
     author_id INTEGER REFERENCES author(id) ON DELETE CASCADE,
     is_deleted BOOLEAN DEFAULT FALSE
+    notes TEXT,
+    comment TEXT,
 );
