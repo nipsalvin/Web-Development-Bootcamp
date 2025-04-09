@@ -61,7 +61,7 @@ app.post("/add_book", async (req, res) => {
   const date_read = req.body.bookDateRead;
   const isbn = req.body.bookIsbn;
   const comments = req.body.bookComments;
-  const notes = req.body.bookNotes;
+  const description = req.body.bookDescription;
 
   console.log("First name: ", first_name); 
   console.log("Last name: ", last_name);
@@ -70,7 +70,7 @@ app.post("/add_book", async (req, res) => {
   console.log("Date read: ", date_read);
   console.log("ISBN: ", isbn);
   console.log("Comments: ", comments);
-  console.log("Notes: ", notes);
+  console.log("Description: ", description);
   // Validate the input
   if (!first_name || !last_name || !title || !rating || !date_read || !isbn) {
     console.error("Missing required fields");
@@ -100,9 +100,9 @@ app.post("/add_book", async (req, res) => {
       console.log("New author added with ID:", authorId);
     }
     await db.query(`
-      INSERT INTO book (title, rating, date_read, isbn, author_id)
-      VALUES ($1, $2, $3, $4, $5);`,
-      [title, rating, date_read, isbn, authorId]);
+      INSERT INTO book (title, rating, date_read, isbn, author_id, comments, description)
+      VALUES ($1, $2, $3, $4, $5, $6, $7);`,
+      [title, rating, date_read, isbn, authorId, comments, description]);
     console.log("Book added successfully!");
     res.redirect("/");
   } catch (err) {
