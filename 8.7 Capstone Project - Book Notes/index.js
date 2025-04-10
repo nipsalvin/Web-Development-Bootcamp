@@ -51,7 +51,7 @@ app.get("/add_book", (req, res) => {
 });
 
 app.post("/add_book", async (req, res) => {
-  // This is to handle the form submission for adding a new book
+// This is to handle the form submission for adding a new book
   console.log("Form submitted");
   console.log(req.body);
   const first_name = req.body.bookAuthorFirstName;
@@ -60,12 +60,23 @@ app.post("/add_book", async (req, res) => {
   const rating = req.body.bookRating;
   const date_read = req.body.bookDateRead;
   const isbn = req.body.bookIsbn;
+  const comments = req.body.bookComments;
+  const description = req.body.bookDescription;
+
   console.log("First name: ", first_name); 
   console.log("Last name: ", last_name);
   console.log("Title: ", title);
   console.log("Rating: ", rating);
   console.log("Date read: ", date_read);
   console.log("ISBN: ", isbn);
+  console.log("Comments: ", comments);
+  console.log("Description: ", description);
+
+  // Validate the input
+  if (!first_name || !last_name || !title || !rating || !date_read || !isbn) {
+    console.error("Missing required fields");
+    return res.render("add_book.ejs", { error: "Please fill in all required fields." });
+  }
 
   try {
     // Check if the author already exists
@@ -89,17 +100,20 @@ app.post("/add_book", async (req, res) => {
       authorId = authorResult.rows[0].id;
       console.log("New author added with ID:", authorId);
     }
-    await db.query(`
-      INSERT INTO book (title, rating, date_read, isbn, author_id)
-      VALUES ($1, $2, $3, $4, $5);`,
-      [title, rating, date_read, isbn, authorId]);
+
+    // Insert the book into the database
+    await db.query(
+      `INSERT INTO book (title, rating, date_read, isbn, author_id, comments, description)
+      VALUES ($1, $2, $3, $4, $5, $6, $7);`,
+      [title, rating, date_read, isbn, authorId, comments, description]
+);
+
     console.log("Book added successfully!");
-    res.redirect("/");
+    res.render("add_book.ejs", { success: "Book added successfully!" });
   } catch (err) {
     console.error("Error adding book:", err);
-    res.status(500).send("An error occurred while adding the book.");
-  };
-  // res.render("add_book.ejs");
+    res.render("add_book.ejs", { error: "An error occurred while adding the book. Please try again." });
+}
 });
 
 app.post("/delete_book", async (req, res) => {
@@ -116,6 +130,27 @@ app.post("/delete_book", async (req, res) => {
     console.error("Error deleting book:", err);
     res.status(500).send("An error occurred while deleting the book.");
   };
+});
+
+app.get("/book/:id", async (req, res) => {
+  const bookId = req.params.id;
+  console.log("Book ID: ", bookId);
+  try {
+    const result = await db.query(`
+      SELECT BOOK.*, 
+             CONCAT(AUTHOR.first_name, ' ', AUTHOR.last_name) AS author_name
+      FROM BOOK
+      JOIN AUTHOR ON BOOK.author_id = AUTHOR.id
+      WHERE BOOK.id = $1
+    `, [bookId]);
+    const book_data = result.rows[0];
+    book_data.coverUrl = `https://covers.openlibrary.org/b/isbn/${book_data.isbn}-M.jpg`;
+    console.log("Book data: ", book_data);
+    res.render("book.ejs", { book_data: book_data });
+  } catch (error) {
+    console.error(error);
+    res.render("book.ejs", { error: error.message });
+  }
 });
 
 app.listen(port, () => {

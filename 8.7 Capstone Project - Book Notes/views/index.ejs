@@ -16,6 +16,13 @@
             <h2>Welcome to Book Read</h2>
             <p>Keep track of the books you've read and share your thoughts!</p>
             <a href="/add_book" class="btn btn-primary">Add Book</a>
+            <!-- Display Success or Error Messages -->
+            <% if (locals.success) { %>
+                <div class="alert alert-success"><%= success %></div>
+            <% } %>
+            <% if (locals.error) { %>
+                <div class="alert alert-danger"><%= error %></div>
+            <% } %>
         </div>
         <br>
         <!-- I am passing a dictionary with JSON called 'book_data' and I want to loop through all keys and values -->
@@ -36,8 +43,8 @@
                                 <h5 class="card-title"><%= book.title %></h5>
                                 <p class="card-text"><strong>Author:</strong> <%= book.author_name %></p>
                                 <p class="card-text"><strong>Rating:</strong> <%= book.rating %></p>
-                                <p class="card-text"><strong>Date Read:</strong> <%= book.date_read.getFullYear()
-                                    %></p>
+                                <p class="card-text"><strong>Date Read:</strong> <%= book.date_read.getFullYear() %></p>
+                                <p class="card-text"><strong>Description:</strong> <%= book.description %></p>
                             </div>
                         </div>
                         <!-- Delete Button Column -->
@@ -46,6 +53,10 @@
                                 <input type="hidden" name="book_id" value="<%= book.id %>">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
+                            <br>
+                            <a href="/book/<%= book.id %>" class="btn btn-primary">
+                                View Book
+                            </a>
                         </div>
                     </div>
                 <% }); %>
