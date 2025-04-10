@@ -13,5 +13,7 @@ CREATE TABLE book (
     isbn VARCHAR(13) NOT NULL,
     date_read DATE,
     author_id INTEGER REFERENCES author(id) ON DELETE CASCADE,
-    is_deleted BOOLEAN DEFAULT FALSE
+    is_deleted BOOLEAN DEFAULT FALSE,
+    description TEXT,
+    comments TEXT
 );
