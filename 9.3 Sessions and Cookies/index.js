@@ -23,6 +23,10 @@ app.use(
     secret:process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: true,
+    // set the age
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    }
   })
 );
 
@@ -76,11 +80,19 @@ app.post("/register", async (req, res) => {
           console.error("Error hashing password:", err);
         } else {
           console.log("Hashed Password:", hash);
-          await db.query(
-            "INSERT INTO users (email, password) VALUES ($1, $2)",
+          const result = await db.query(
+            "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
             [email, hash]
           );
-          res.render("secrets.ejs");
+          const user = result.rows[0];
+          req.login(user, (err) => {
+            if (err) {
+              console.error("Error logging in user:", err);
+              res.redirect("/register");
+            } else {
+              res.redirect("/secrets");
+            }
+          })
         }
       });
     }
@@ -106,8 +118,10 @@ passport.use(new Strategy(async function verify(username, password, cb) {
       const storedHashedPassword = user.password;
       bcrypt.compare(password, storedHashedPassword, (err, result) => {
         if (err) {
+          console.error("Error comparing passwords:", err);
           return cb(err);
         } else {
+          console.log("Password comparison result:", result);
           if (result) {
             return cb(null, user);
           } else {
@@ -116,9 +130,11 @@ passport.use(new Strategy(async function verify(username, password, cb) {
         }
       });
     } else {
+      console.log("User not found");
       return cb('User not found');
     }
   } catch (err) {
+    console.error("Error querying database:", err);
     cb(err)
   }
 }));
@@ -131,6 +147,17 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser((user, cb) => {
   // Replaces the user id in the session with the entire user object
   cb(null, user);
+});
+
+
+app.get("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      console.error("Error logging out:", err);
+    } else {
+      res.redirect("/");
+    }
+  });
 });
 
 app.listen(port, () => {
