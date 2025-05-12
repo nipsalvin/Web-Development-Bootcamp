@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import passport from "passport";
 import pkg from "passport-local";
 import session from "express-session";
+import GoogleStrategy from "passport-google-oauth2";
 import dotenv from "dotenv";
 
 const { Strategy } = pkg;
@@ -49,7 +50,9 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  req.logout(function (err) {
+  // 2 Methods to logout
+  // req.logout(function (err) {
+  req.logout((err) =>{
     if (err) {
       return next(err);
     }
@@ -65,6 +68,20 @@ app.get("/secrets", (req, res) => {
     res.redirect("/login");
   }
 });
+
+app.get(
+  "/auth/google", 
+  passport.authenticate("google", 
+  { scope: ["profile", "email"] }
+));
+
+app.get(
+  "/auth/google/secrets",
+  passport.authenticate("google", {
+    successRedirect: "/secrets",
+    failureRedirect: "/login",
+  })
+);
 
 app.post(
   "/login",
@@ -108,7 +125,8 @@ app.post("/register", async (req, res) => {
 });
 
 passport.use(
-  new Strategy(async function verify(username, password, cb) {
+  // overrideName => "local", Strategy => LocalStrategy
+  "local", new Strategy(async function verify(username, password, cb) {
     try {
       const result = await db.query("SELECT * FROM users WHERE email = $1 ", [
         username,
@@ -133,6 +151,39 @@ passport.use(
         });
       } else {
         return cb("User not found");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  })
+);
+
+passport.use(
+  // overrideName => "google", Strategy => GoogleStrategy
+  "google", new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/google/secrets",
+    userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+  }, async (accessToken, refreshToken, profile, cb) => {
+    console.log("Google profile:", profile);
+    const email = profile.email;
+    console.log("Google email:", email);
+    try {
+      const result = await db.query("SELECT * FROM users WHERE email = $1", [email])
+      if (result.rows.length === 0) {
+        // User does not exist
+        const newUser = await db.query(
+          "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
+          [email, "google"]
+        );
+        console.log("New user created:", newUser.rows[0]);
+        return cb(null, newUser.rows[0]);
+      } else {
+        // User Exists
+        const user = result.rows[0];
+        console.log("User found:", user);
+        return cb(null, user);
       }
     } catch (err) {
       console.log(err);
