@@ -4,15 +4,18 @@ import pg from "pg";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import pkg from "passport-local";
-import GoogleStrategy from "passport-google-oauth2";
 import session from "express-session";
-import env from "dotenv";
+import GoogleStrategy from "passport-google-oauth2";
+import dotenv from "dotenv";
 
 const { Strategy } = pkg;
 const app = express();
 const port = 3000;
 const saltRounds = 10;
-env.config();
+dotenv.config();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
 app.use(
   session({
@@ -21,8 +24,6 @@ app.use(
     saveUninitialized: true,
   })
 );
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -49,7 +50,9 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  req.logout(function (err) {
+  // 2 Methods to logout
+  // req.logout(function (err) {
+  req.logout((err) =>{
     if (err) {
       return next(err);
     }
@@ -57,56 +60,17 @@ app.get("/logout", (req, res) => {
   });
 });
 
-app.get("/secrets", async(req, res) => {
+app.get("/secrets", (req, res) => {
+  console.log(req.user);
   if (req.isAuthenticated()) {
-    console.log('req.user', req.user);
-    const result = await db.query(
-      "SELECT secret FROM users WHERE email = $1",
-      [req.user.email]
-    );
-    const secret = result.rows[0].secret;
-    console.log('secret', secret);
-    res.render("secrets.ejs", { secret: secret });
-    //TODO: Update this to pull in the user secret to render in secrets.ejs
+    res.render("secrets.ejs");
   } else {
     res.redirect("/login");
-  }
-});
-
-//TODO: Add a get route for the submit button
-//Think about how the logic should work with authentication.
-app.get("/submit", (req, res) => {
-  console.log('req.isAuthenticated()', req.isAuthenticated());
-  if (req.isAuthenticated()) {
-    res.render("submit.ejs");
-  } else {
-    res.redirect("/login");
-  }
-});
-
-app.post("/submit", async (req, res) => {
-  const secret = req.body.secret;
-  const userId = req.user.id;
-
-  try {
-    const result = await db.query(
-      "UPDATE users SET secret = $1 WHERE id = $2 RETURNING *",
-      [secret, userId]
-    );
-    if (result.rows.length > 0) {
-      console.log("Secret updated successfully");
-      res.redirect("/secrets");
-    } else {
-      console.log("Error updating secret");
-      res.redirect("/submit");
-    }
-  } catch (err) {
-    console.log(err);
   }
 });
 
 app.get(
-  "/auth/google",
+  "/auth/google", 
   passport.authenticate("google", {
     scope: ["profile", "email"],
   })
@@ -161,12 +125,9 @@ app.post("/register", async (req, res) => {
   }
 });
 
-//TODO: Create the post route for submit.
-//Handle the submitted data and add it to the database
-
 passport.use(
-  "local",
-  new Strategy(async function verify(username, password, cb) {
+  // overrideName => "local", Strategy => LocalStrategy
+  "local", new Strategy(async function verify(username, password, cb) {
     try {
       const result = await db.query("SELECT * FROM users WHERE email = $1 ", [
         username,
@@ -176,12 +137,15 @@ passport.use(
         const storedHashedPassword = user.password;
         bcrypt.compare(password, storedHashedPassword, (err, valid) => {
           if (err) {
+            //Error with password check
             console.error("Error comparing passwords:", err);
             return cb(err);
           } else {
             if (valid) {
+              //Passed password check
               return cb(null, user);
             } else {
+              //Did not pass password check
               return cb(null, false);
             }
           }
@@ -196,39 +160,40 @@ passport.use(
 );
 
 passport.use(
-  "google",
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/google/secrets",
-      userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
-    },
-    async (accessToken, refreshToken, profile, cb) => {
-      try {
-        console.log(profile);
-        const result = await db.query("SELECT * FROM users WHERE email = $1", [
-          profile.email,
-        ]);
-        if (result.rows.length === 0) {
-          const newUser = await db.query(
-            "INSERT INTO users (email, password) VALUES ($1, $2)",
-            [profile.email, "google"]
-          );
-          return cb(null, newUser.rows[0]);
-        } else {
-          return cb(null, result.rows[0]);
-        }
-      } catch (err) {
-        return cb(err);
+  // overrideName => "google", Strategy => GoogleStrategy
+  "google", new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/google/secrets",
+    userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+  }, async (accessToken, refreshToken, profile, cb) => {
+    console.log("Google profile:", profile);
+    try {
+      const result = await db.query("SELECT * FROM users WHERE email = $1", 
+        [profile.email]
+      );
+      if (result.rows.length === 0) {
+        // User does not exist
+        const newUser = await db.query(
+          "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
+          [profile.email, "google"]
+        );
+        console.log("New user created:", newUser.rows[0]);
+        return cb(null, newUser.rows[0]);
+      } else {
+        // User Exists
+        const user = result.rows[0];
+        console.log("User found:", user);
+        return cb(null, user);
       }
+    } catch (err) {
+      console.log(err);
     }
-  )
+  })
 );
 passport.serializeUser((user, cb) => {
   cb(null, user);
 });
-
 passport.deserializeUser((user, cb) => {
   cb(null, user);
 });
