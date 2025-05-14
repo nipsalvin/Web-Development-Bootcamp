@@ -71,9 +71,10 @@ app.get("/secrets", (req, res) => {
 
 app.get(
   "/auth/google", 
-  passport.authenticate("google", 
-  { scope: ["profile", "email"] }
-));
+  passport.authenticate("google", {
+    scope: ["profile", "email"]
+  })
+);
 
 app.get(
   "/auth/google/secrets",
@@ -167,8 +168,6 @@ passport.use(
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
   }, async (accessToken, refreshToken, profile, cb) => {
     console.log("Google profile:", profile);
-    const email = profile.email;
-    console.log("Google email:", email);
     try {
       const result = await db.query("SELECT * FROM users WHERE email = $1", [email])
       if (result.rows.length === 0) {
