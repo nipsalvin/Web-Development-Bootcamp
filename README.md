@@ -11,3 +11,4 @@ In this course we learn:-
   - `Express JS`
   - `REST APIs`
   - `Making API Requests using` __AXIOS__ 
+  - `React JS` *Templating*, *Styling*, *Components* & *Structure*
