@@ -14,8 +14,8 @@ console.log(currentTime > 12);
 //   }
 // }
 
-const header1 = "Good Morning. Start Working";
-const header2 = "Good Evening. Stop Working";
+const header1 = "Good Morning. Put In Work";
+const header2 = "Good Evening. Take a Relax";
 
 // Using a Ternary Operator in the html tags
 // You can only use an EXPRESSION and not a STATEMENT
