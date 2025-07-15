@@ -11,6 +11,7 @@ const [cat, dog] = animals;
 // When destructuring an object you have to use names that are 'keys' in the object
 // const { name, sound } = cat;
 // If you want to use personalized variable names in the JSON, you can change it as below
+// const { name:animalName, sound:animalSound } = cat;
 // You can also provide default values. Incase there are missing values
 // const { name = "Fluffy", sound = "Purr" } = cat;
 // You can also destructure an object that is in another object
