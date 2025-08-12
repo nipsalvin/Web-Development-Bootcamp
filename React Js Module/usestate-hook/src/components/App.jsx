@@ -16,7 +16,7 @@ function App() {
   // Turns to
   const [red, green, blue] = [9, 123, 255];
 
-  // Instead of using state, we destructure
+  // Instead of using state[0], we destructure
   const [count, setCount] = useState(0);
   console.log(count, setCount);
 
