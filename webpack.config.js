@@ -103,13 +103,13 @@ module.exports = {
       process: require.resolve("process/browser"),
     }),
   ],
-  // proxy /api to port 8000 during development
+  // proxy /api to port 35095 during development
   devServer: {
     host: "127.0.0.1",
     proxy: [
       {
         context: ["/api"],
-        target: "http://localhost:35475",
+        target: "http://localhost:35095",
         changeOrigin: true,
       },
     ],
