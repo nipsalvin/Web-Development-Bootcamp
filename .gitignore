@@ -40,7 +40,9 @@ build/Release
 
 # Dependency directories
 node_modules/
+node_modules/*
 jspm_packages/
+*/node_modules/
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
@@ -130,4 +132,8 @@ dist
 .pnp.*
 test
 
+<<<<<<< HEAD
 client_secret*
+=======
+client_secret*
+>>>>>>> e4a3c2a393b203d4224952b10e85e68ea289dce6
