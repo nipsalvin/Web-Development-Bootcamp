@@ -1,21 +1,18 @@
 {
   "canisters": {
-    "hello": {
-      "main": "src/hello/main.mo",
+    "hello_backend": {
+      "main": "src/hello_backend/main.mo",
       "type": "motoko"
     },
-    "hello_assets": {
+    "hello_frontend": {
       "dependencies": [
-        "hello"
+        "hello_backend"
       ],
-      "frontend": {
-        "entrypoint": "src/hello_assets/src/index.html"
-      },
       "source": [
-        "src/hello_assets/assets",
-        "dist/hello_assets/"
+        "src/hello_frontend/dist"
       ],
-      "type": "assets"
+      "type": "assets",
+      "workspace": "hello_frontend"
     }
   },
   "defaults": {
@@ -24,12 +21,6 @@
       "packtool": ""
     }
   },
-  "dfx": "0.9.3",
-  "networks": {
-    "local": {
-      "bind": "127.0.0.1:8000",
-      "type": "ephemeral"
-    }
-  },
+  "output_env_file": ".env",
   "version": 1
 }
