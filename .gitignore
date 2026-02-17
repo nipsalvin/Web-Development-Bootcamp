@@ -132,8 +132,4 @@ dist
 .pnp.*
 test
 
-<<<<<<< HEAD
 client_secret*
-=======
-client_secret*
->>>>>>> e4a3c2a393b203d4224952b10e85e68ea289dce6
