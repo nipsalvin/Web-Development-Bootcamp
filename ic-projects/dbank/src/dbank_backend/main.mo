@@ -4,7 +4,7 @@ persistent actor DBank {
   var currentValue = 300; //This is for mutable variables.
   currentValue := 100;
 
-  let _id = 512365; //This is for immutable variables.
+  let id = 512365; //This is for immutable variables.
 
   // Debug.print(debug_show(currentValue) # " " # debug_show(id));
 
@@ -18,8 +18,13 @@ persistent actor DBank {
   // Allow users to withdraw an amount from currentValue
   // Decrease the currentValue by the amount
   public func withdraw(amount:Nat) {
-    currentValue -= amount;
-    Debug.print(debug_show(currentValue));
+    let tempValue: Int = currentValue - amount;
+    if (tempValue >=0) {
+      currentValue -= amount;
+      Debug.print(debug_show(currentValue));
+    } else {
+      Debug.print("Insufficient balance");
+    }
   };
 
   public func getBalance() {
