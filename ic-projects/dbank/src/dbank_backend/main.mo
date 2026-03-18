@@ -43,7 +43,7 @@ persistent actor DBank {
     let timePassedNanoSecs = currentTime - startTime;
     let timePassedSecs = timePassedNanoSecs / 1_000_000_000;
     let timePassedMins = timePassedSecs / 60;
-    currentValue := currentValue * (1.01 ** Float.fromInt(timePassedMins)); // compound interest per minute
+    currentValue := currentValue * (1.0001 ** Float.fromInt(timePassedMins)); // compound interest per minute
     startTime := currentTime;
   };
 }
