@@ -133,3 +133,31 @@ dist
 test
 
 client_secret*
+
+# =========================
+# Internet Computer (DFX)
+# =========================
+.dfx/
+canister_ids.json
+.generated/
+*.pem
+*.key
+*.der
+identity.pem
+
+output/
+# Local identities (VERY IMPORTANT)
+.identity/
+# or if you keep identities elsewhere
+# ~/.config/dfx/identity/
+
+# =========================
+# Rust (if using Rust canisters)
+# =========================
+target/
+Cargo.lock
+
+# =========================
+# Motoko
+# =========================
+.mops/
