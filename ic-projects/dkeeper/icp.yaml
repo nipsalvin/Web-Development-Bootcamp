@@ -1,0 +1,13 @@
+canisters:
+  - name: dkeeper_backend
+    recipe:
+      type: "@dfinity/motoko@v5.0.0"
+
+  - name: dkeeper_frontend
+    recipe:
+      type: "@dfinity/static-site@v0.3.3"
+      configuration:
+        dir: src/dkeeper_frontend/dist
+        build:
+          - npm install
+          - npm run build --workspace=dkeeper_frontend
