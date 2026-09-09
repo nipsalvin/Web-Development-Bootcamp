@@ -30,6 +30,9 @@ icp canister --help
 | `dfx generate` | **gone** → use `@icp-sdk/bindgen` |
 | `dfx deploy --network ic` | `icp deploy -e ic` |
 
+## Viewing Logs/Debug statements
+| `icp canister logs dkeeper_backend --follow`
+
 ## Running the project locally
 
 From `ic-projects/dkeeper`:

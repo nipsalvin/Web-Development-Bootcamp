@@ -1,16 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
+import { dkeeper_backend } from "declarations/dkeeper_backend";
 
 function App() {
   const [notes, setNotes] = useState([]);
 
   function addNote(newNote) {
     setNotes(prevNotes => {
-      return [...prevNotes, newNote];
+      dkeeper_backend.createNote(newNote.title, newNote.content);
+      return [ newNote, ...prevNotes];
     });
+  }
+
+  useEffect(() => {
+    console.log("useEffect is triggered");
+    fetchData();
+  }, []); // Empty dependency array means run only once when the component mounts
+
+  async function fetchData() {
+    // 'await' means "wait for the promise to resolve" (wait for dkeeper_backend.readNotes() to resolve)
+    const notesArray = await dkeeper_backend.readNotes();
+    setNotes(notesArray);
   }
 
   function deleteNote(id) {
