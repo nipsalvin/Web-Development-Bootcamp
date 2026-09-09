@@ -27,7 +27,8 @@ persistent actor DKeeper {
 
   // incomplete function
   public func removeNote(id: Nat) : async () {
-
+    // Challenge: Remove the note at the given index.
+    // use take and drop to remove the note at the given index.
   };
 
 }
