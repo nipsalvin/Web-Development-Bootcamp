@@ -1,0 +1,384 @@
+:ςw
+©›J
+°›J
+€€@
+όΚ–
+	authorize
+deauthorize
+disable_protection
+enable_protection
+execute_operations
+issue_token
+list_authorized
+refresh_env
+revoke_token
+
+start_sync
+
+state_hash
+upload_chunks
+can_synccheck_protection_statusget_asset_detailsget_redirect_ruleshttp_requestlist_tokenspreparation_canary	version β*Αt
+σs
+candid:serviceΰsΉs// β”€β”€β”€β”€β”€β”€β”€β”€β”€ HTTP Gateway types β”€β”€β”€β”€β”€β”€β”€β”€β”€
+//
+// The IC HTTP Gateway interface types, from the official specification:
+// https://docs.internetcomputer.org/references/http-gateway-protocol-spec/
+//
+// This canister does not use the streaming-callback strategy: large assets are
+// served as certified HTTP 206 range responses, which the gateway reassembles
+// into a full 200 (and which also satisfy client `Range` requests). So
+// `HttpResponse` carries no `streaming_strategy` and there is no streaming
+// callback method. The gateway's own `HttpResponse` type keeps `streaming_strategy`
+// as an optional field, which decodes to null when absent.
+
+type HeaderField = record { text; text; };
+
+type HttpRequest = record {
+  method: text;
+  url: text;
+  headers: vec HeaderField;
+  body: blob;
+  certificate_version: opt nat16;
+};
+
+type HttpResponse = record {
+  status_code: nat16;
+  headers: vec HeaderField;
+  body: blob;
+  upgrade : opt bool;
+};
+
+// The content encodings the canister and sync plugin support β€” a deliberately
+// small, closed set (see `wire-types::Encoding`). Carried as a variant
+// (one byte on the wire) rather than a string. `Identity` is the uncompressed
+// form; it is a real stored encoding but never emitted as a `Content-Encoding`
+// header. Defined up here so the asset types below can reference it.
+type Encoding = variant { Identity; Gzip; Brotli };
+
+// β”€β”€β”€β”€β”€β”€β”€β”€β”€ Shared aliases β”€β”€β”€β”€β”€β”€β”€β”€β”€
+
+// Identifies an in-progress sync. Sequential and monotonic across the canister's
+// whole lifetime, so a session id is never reused β€” calls carrying a superseded
+// id are cleanly rejected.
+type SessionId = nat64;
+// Index of a content chunk staged within a sync (0, 1, 2, β€¦ in arrival order).
+type ChunkId = nat64;
+// An asset's path, e.g. `/index.html` or `/assets/app.css`.
+type Key = text;
+
+// β”€β”€β”€β”€β”€β”€β”€β”€β”€ Asset & redirect-rule types β”€β”€β”€β”€β”€β”€β”€β”€β”€
+
+// One encoding of an asset, as the `get_asset_details` query reports it.
+type AssetEncodingDetails = record {
+  encoding: Encoding;
+  sha256: blob; // sha256 of the entire encoded asset
+};
+
+// An asset as the `get_asset_details` query reports it. `headers` carries the
+// asset's per-asset response headers.
+type AssetDetails = record {
+  key: Key;
+  content_type: text;
+  encodings: vec AssetEncodingDetails;
+  headers: vec HeaderField;
+};
+
+type RulePattern = variant {
+  // Matches a single absolute path, e.g. `/old-page`.
+  Exact: text;
+  // Matches any URL whose path starts with this prefix. The prefix must end with
+  // `/` so the subtree boundary is unambiguous.
+  Subtree: text;
+};
+
+// A single redirect/rewrite/error rule, mirroring one line of a Netlify-style
+// `_redirects` file. Rules are matched in declaration order; first match wins.
+type RedirectRule = record {
+  // Request-side pattern.
+  from: RulePattern;
+  // Target. Interpretation depends on `status`:
+  // - 200: absolute asset path (rewrite β€” serve the target's body)
+  // - 3xx: absolute URL or absolute path (sent as `Location`)
+  // - 4xx: absolute asset path to serve as the custom error page (e.g.
+  //   `/404.html`); if the asset doesn't exist the rule stays inert and
+  //   unmatched paths fall through to the canister's built-in 404
+  to: text;
+  // One of 200, 301, 302, 307, 308, 404, 410.
+  status: nat16;
+  // Extra response headers on top of the status-intrinsic ones.
+  headers: vec HeaderField;
+};
+
+// β”€β”€β”€β”€β”€β”€β”€β”€β”€ Sync: operations β”€β”€β”€β”€β”€β”€β”€β”€β”€
+//
+// The mutations a sync applies, batched into `execute_operations` calls.
+
+// Create a new asset. Sets metadata only; content is added separately via
+// SetAssetContent. `headers` are the asset's per-asset response headers.
+type CreateAssetArguments = record {
+  key: Key;
+  content_type: text;
+  headers: vec HeaderField;
+};
+
+// Add or change content for an asset, by content encoding. `chunk_ids`
+// reference chunks previously staged with `upload_chunks`, in order. Both hashes
+// are computed by the client and trusted by the canister (stored into the
+// certified tree without re-hashing): a wrong hash only makes the asset
+// unservable, since the HTTP gateway re-verifies the body hash end-to-end, so it
+// can never serve forged content.
+type SetAssetContentArguments = record {
+  key: Key;
+  encoding: Encoding;
+  chunk_ids: vec ChunkId;
+  // SHA-256 of the whole encoding (all chunks concatenated).
+  sha256: blob;
+  // SHA-256 of each chunk, parallel to chunk_ids. Used for multi-chunk 206 range
+  // certification; ignored for single-chunk encodings (which reuse `sha256`).
+  chunk_sha256: vec blob;
+};
+
+// Remove one content encoding from an asset. The asset itself remains as long as
+// other encodings exist.
+type UnsetAssetContentArguments = record {
+  key: Key;
+  encoding: Encoding;
+};
+
+// Replace an asset's per-asset response headers. The whole list is overwritten,
+// not merged.
+type SetAssetHeadersArguments = record {
+  key: Key;
+  headers: vec HeaderField;
+};
+
+// Delete an asset and all of its encodings.
+type DeleteAssetArguments = record {
+  key: Key;
+};
+
+// Replace the entire redirect ruleset in one operation.
+type SetRedirectRulesArguments = record {
+  rules: vec RedirectRule;
+};
+
+// Record the client's compression fingerprint over the assets this sync wrote.
+// Emitted only after a sync prepared every asset from scratch, so the stored
+// value describes the whole asset set. See `preparation_canary`.
+type SetPreparationCanaryArguments = record {
+  canary: blob;
+};
+
+// A single mutation applied during a sync.
+type Operation = variant {
+  CreateAsset: CreateAssetArguments;
+  SetAssetContent: SetAssetContentArguments;
+  UnsetAssetContent: UnsetAssetContentArguments;
+  DeleteAsset: DeleteAssetArguments;
+  SetAssetHeaders: SetAssetHeadersArguments;
+  SetRedirectRules: SetRedirectRulesArguments;
+  SetPreparationCanary: SetPreparationCanaryArguments;
+};
+
+// β”€β”€β”€β”€β”€β”€β”€β”€β”€ Sync: session β”€β”€β”€β”€β”€β”€β”€β”€β”€
+
+// Result of start_sync. `Busy` is a normal outcome (not an error): a sync is
+// already in progress and the caller may not take it over yet.
+type StartSyncResult = variant {
+  Started: record { session_id: SessionId };
+  // `owner` holds the active sync; `idle_for_secs` is the time since its last
+  // call. Another caller may reclaim the sync only once it has gone stale.
+  Busy: record { owner: principal; idle_for_secs: nat64 };
+};
+
+// Content chunks to stage under a sync; see `upload_chunks`.
+type UploadChunksArguments = record {
+  session_id: SessionId;
+  chunks: vec blob;
+};
+
+// One batch of operations to apply under a sync; see `execute_operations`.
+type ExecuteOperationsArguments = record {
+  session_id: SessionId;
+  operations: vec Operation;
+  // Set on the last call of a sync: once all operations are applied, the
+  // canister finalizes the sync and returns to "no ongoing sync".
+  is_final: bool;
+};
+
+// β”€β”€β”€β”€β”€β”€β”€β”€β”€ Access protection β”€β”€β”€β”€β”€β”€β”€β”€β”€
+
+// Reported by `check_protection_status`. Distinguishes a public app from a
+// private one, and a healthy private app from a degraded one whose login-page
+// asset hasn't been synced (the app stays protected; a sync heals it).
+type ProtectionStatus = variant {
+  Disabled;
+  Enabled : record { login_page : Key };
+  EnabledLoginPageMissing : record { login_page : Key };
+};
+
+// Arguments to `issue_token`. A record (not positional args) so the two text
+// fields β€” the label and the optional chosen value β€” can't be silently swapped.
+type IssueTokenArgs = record {
+  // Human label β€” the token's unique identifier (issue / revoke / list).
+  label : text;
+  // Lifetime in seconds from now.
+  ttl_secs : nat32;
+  // A chosen (typeable) passphrase, or null for a high-entropy random token.
+  value : opt text;
+};
+
+// One live access token as `list_tokens` reports it (no secret material).
+type TokenInfo = record {
+  label : text;
+  expires_at : nat64; // absolute expiry, nanoseconds
+};
+
+service: {
+  // β”€β”€β”€β”€β”€β”€β”€β”€β”€ Canister metadata β”€β”€β”€β”€β”€β”€β”€β”€β”€
+
+  // Semver release identity shared by the canister and its paired sync plugin.
+  // The two ship and are upgraded as a locked pair, so the plugin refuses to
+  // sync unless this exactly matches its own version. The value also encodes
+  // state-upgradability between releases: while major is 0, a minor change is
+  // breaking (reinstall + re-upload all state) and a patch-only change is
+  // non-breaking (in-place upgrade preserves state); from 1.0.0 the major plays
+  // that role.
+  version: () -> (record { major: nat32; minor: nat32; patch: nat32 }) query;
+
+  // β”€β”€β”€β”€β”€β”€β”€β”€β”€ HTTP gateway β”€β”€β”€β”€β”€β”€β”€β”€β”€
+  // Standard canister HTTP interface; see
+  // https://docs.internetcomputer.org/references/http-gateway-protocol-spec/
+
+  http_request: (request: HttpRequest) -> (HttpResponse) query;
+
+  // β”€β”€β”€β”€β”€β”€β”€β”€β”€ Asset queries β”€β”€β”€β”€β”€β”€β”€β”€β”€
+
+  // A page of asset details, ordered by key. Pass the last key from the
+  // previous page as `start_after` to fetch the next page (`null` starts at the
+  // beginning); each page holds at most the canister's page size. An empty
+  // result means there are no assets after `start_after`.
+  get_asset_details : (start_after: opt Key) -> (vec AssetDetails) query;
+
+  // A page of redirect rules, in match order (first match wins). Pass the
+  // number of rules already seen as `start_index` to fetch the next page (0
+  // starts at the beginning); each page holds at most the canister's page size.
+  // An empty result means there are no rules at or after `start_index`.
+  get_redirect_rules: (start_index: nat64) -> (vec RedirectRule) query;
+
+  // β”€β”€β”€β”€β”€β”€β”€β”€β”€ Sync β”€β”€β”€β”€β”€β”€β”€β”€β”€
+  //
+  // Assets are only ever mutated through a sync. At most one sync runs at a
+  // time. `start_sync` returns a session id that all subsequent calls of the
+  // sync must carry; the canister rejects calls bearing a superseded id.
+  // Operations (create, set/unset content, set headers, delete) are applied
+  // by `execute_operations`; the sync finalizes on the call flagged `is_final`.
+
+  // Begin a sync. Returns a session id, or `Busy` if another non-stale sync is
+  // already in progress (the owner can always reclaim their own sync).
+  start_sync : () -> (StartSyncResult);
+  // Stage content chunks under the sync. Returns the id assigned to each chunk,
+  // in the same order as the argument's `chunks`; the caller maps them by
+  // position to reference the chunks in SetAssetContent operations. Because the
+  // mapping is positional per call, uploads may be issued concurrently.
+  upload_chunks: (UploadChunksArguments) -> (vec ChunkId);
+
+  // The compression fingerprint recorded by the client that last prepared every
+  // asset (32 bytes), or 32 zero bytes if none has. A syncing client compares it
+  // against its own to decide whether the stored compressed encodings are the
+  // ones its compressors would produce β€” if not, it re-prepares everything
+  // rather than trusting an unchanged uncompressed hash. Opaque to the canister.
+  preparation_canary: () -> (blob) query;
+
+  // Apply a group of operations. Perform all successfully, or reject.
+  // The call flagged `is_final` finalizes the sync and returns the canonical
+  // state hash recomputed over the now-final state (the same value `state_hash`
+  // then reports); every other call returns `null`. Returning it here saves a
+  // finishing sync a second round trip.
+  execute_operations: (ExecuteOperationsArguments) -> (opt blob);
+
+  // β”€β”€β”€β”€β”€β”€β”€β”€β”€ Authorization β”€β”€β”€β”€β”€β”€β”€β”€β”€
+  // A set of extra principals authorized to sync assets. Canister controllers
+  // are always authorized (without being listed) and are the only callers that
+  // can change this set.
+
+  authorize: (principal) -> ();
+  deauthorize: (principal) -> ();
+  list_authorized: () -> (vec principal);
+  // Whether the calling identity may sync assets (authorized or a controller).
+  can_sync: () -> (bool) query;
+
+  // β”€β”€β”€β”€β”€β”€β”€β”€β”€ Verification β”€β”€β”€β”€β”€β”€β”€β”€β”€
+
+  // The canister's canonical state hash: a 32-byte SHA-256 over its served-
+  // content model β€” every asset's content_type, response headers, and per-
+  // encoding content hashes, plus the redirect rules in match order. Recomputed
+  // at the end of every sync; a `blob` of 32 zero bytes before the first sync.
+  //
+  // Lets a third party verify the canister serves exactly a known frontend
+  // build: reproduce `dist/` from public source, compute the same hash locally
+  // (`state-hash-cli`), and compare. An update (not a query) so the reply is
+  // consensus-backed; public and unguarded, returning the cached value with no
+  // recomputation.
+  state_hash: () -> (blob);
+
+  // β”€β”€β”€β”€β”€β”€β”€β”€β”€ Environment β”€β”€β”€β”€β”€β”€β”€β”€β”€
+
+  // Recapture the canister's `PUBLIC_*` env vars and IC root key and re-certify
+  // the `ic_env` cookie served on every HTML response. Authorized to the same
+  // callers as a sync (authorized syncers and controllers). The env is also
+  // captured automatically at the start of every sync, so this is only needed to
+  // publish an env-var change without a content sync. Blast radius is bounded:
+  // only `text/html` assets and redirect rules re-certify.
+  refresh_env: () -> ();
+
+  // β”€β”€β”€β”€β”€β”€β”€β”€β”€ Access protection β”€β”€β”€β”€β”€β”€β”€β”€β”€
+  //
+  // Controller-only configuration for the "private app" gate. With protection
+  // on, unauthenticated HTTP requests get a certified redirect to the login page
+  // (HTML) or a certified 401 (other types) instead of asset content; access is
+  // a set of labeled tokens (the cookie *is* the token). All serving β€” including
+  // login validation β€” stays in the `http_request` query. A public app
+  // (protection off) is completely unchanged.
+
+  // Turn the gate on, naming the owner-supplied login-page asset (gate-exempt).
+  // Does not require the page to exist yet (enable-first is the secure ordering).
+  enable_protection : (login_page : Key) -> ();
+  // Turn the gate off and drop all tokens.
+  disable_protection : () -> ();
+  // Mint a token; returns the token value (shown once). A classic "password" is
+  // one long-lived token.
+  issue_token : (IssueTokenArgs) -> (text);
+  // Revoke the token with the given label (live on the next request).
+  revoke_token : (label : text) -> ();
+  // Live tokens (label + expiry) for the management UI. Controller-only.
+  list_tokens : () -> (vec TokenInfo) query;
+  // Whether protection is off, healthy, or degraded. Controller-only.
+  check_protection_status : () -> (ProtectionStatus) query;
+}
+ χΡo—FΘΟ±–2•°Ύ[Fν—§ρ™Η &Λzο
+I
+supported_certificate_versions'2 \V®§ήΐ)Ύn?Ιι>ÒλΑ4”>mΎ2 ή‹‘NΛ®ΨΓΩ¦mΊf ¤›HΩV‘γzdγΝ=|—h-8HΊμές›«ΕπZ
+xΆ ΪπmOz{ω€ώ'Νρφ9>1f_¶±8§―ά΅²γκ³‡ΪΈ€Κ
+Ò*]\          Ψϊ
+οαΟσ·Επ‚                Ά	®¬©Ά
+°θ³Ά
+…Ζ³ωΆ€ΚÒΖªc
+$‘φΫθ–«Επ"
+
+
+       Ϋ*
+
+
+9Ίμές›«Επ
+
+:$ ή‹‘NΛ®ΨΓΩ¦mΊf ¤›HΩV‘γzdγΝ=|—h-²                Ί P9'          Β ΚP
+
+                
+v=x             
+4               "
+έ               θ€€€€ ²Ί?
+ PUBLIC_CANISTER_ID:dbank_backend4fbx2-kt777-77775-aaabq-caiΊ@
+!PUBLIC_CANISTER_ID:dbank_frontend4caro-hl777-77775-aaaba-caiΐ€ ΘΠψ¥€υ4‚	®¬©
+°θ³
+…Ζ³ω€ΚÒΖΆ                ª°‘φΫθ–«ΕπΊγκ³‡Ϊ
