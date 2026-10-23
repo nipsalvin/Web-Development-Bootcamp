@@ -27,6 +27,8 @@ function App() {
   }
 
   function deleteNote(id) {
+    dkeeper_backend.removeNote(id);
+    console.log("deleteNote is triggered for id: " + id);
     setNotes(prevNotes => {
       return prevNotes.filter((noteItem, index) => {
         return index !== id;

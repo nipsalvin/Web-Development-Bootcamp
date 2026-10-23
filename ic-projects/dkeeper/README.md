@@ -38,7 +38,7 @@ icp canister --help
 From `ic-projects/dkeeper`:
 
 ```bash
-icp network start -d
+icp network start -d # -d is for detached
 icp deploy
 icp network stop    # when finished
 ```
