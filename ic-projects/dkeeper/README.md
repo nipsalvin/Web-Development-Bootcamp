@@ -21,7 +21,7 @@ icp canister --help
 
 ## Daily commands (icp)
 
-| What you did (dfx) | Use instead (icp) |
+|Old (dfx) | New (icp) |
 |---|---|
 | `dfx start --background` | `icp network start -d` |
 | `dfx stop` | `icp network stop` |
