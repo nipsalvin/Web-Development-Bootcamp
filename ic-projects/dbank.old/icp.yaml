@@ -1,0 +1,13 @@
+canisters:
+  - name: dbank_backend
+    recipe:
+      type: "@dfinity/motoko@v5.0.0"
+
+  - name: dbank_frontend
+    recipe:
+      type: "@dfinity/static-site@v0.3.3"
+      configuration:
+        dir: src/dbank_frontend/dist
+        build:
+          - npm install
+          - npm run build --workspace=dbank_frontend

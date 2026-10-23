@@ -1,10 +1,10 @@
-# `dbank`
+# `dbank.old`
 
-Welcome to your new `dbank` project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
+Welcome to your new `dbank.old` project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
 
 To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
 
-To learn more before you start working with `dbank`, see the following documentation available online:
+To learn more before you start working with `dbank.old`, see the following documentation available online:
 
 - [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
 - [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
@@ -14,32 +14,39 @@ To learn more before you start working with `dbank`, see the following documenta
 If you want to start working on your project right away, you might want to try the following commands:
 
 ```bash
-cd dbank/
-dfx help
-dfx canister --help
+cd dbank.old/
+icp --help
+icp canister --help
+```
+
+## Daily commands (icp)
+
+| Old (dfx) | New (icp) |
+|---|---|
+| `dfx start --background` | `icp network start -d` |
+| `dfx stop` | `icp network stop` |
+| `dfx deploy` / setup | `icp deploy` |
+| `dfx build` | `icp build` |
+| `dfx generate` | **gone** → use `@icp-sdk/bindgen` |
+| `dfx deploy --network ic` | `icp deploy -e ic` |
+
+## Viewing Logs/Debug statements
+
+```bash
+icp canister logs dbank_backend --follow
 ```
 
 ## Running the project locally
 
-If you want to test your project locally, you can use the following commands:
+From `ic-projects/dbank.old`:
 
 ```bash
-# Starts the replica, running in the background
-dfx start --background
-
-# Deploys your canisters to the replica and generates your candid interface
-dfx deploy
+icp network start -d # -d is for detached
+icp deploy
+icp network stop    # when finished
 ```
 
-Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
-
-If you have made changes to your backend canister, you can generate a new candid interface with
-
-```bash
-npm run generate
-```
-
-at any time. This is recommended before starting the frontend development server, and will be run automatically any time you run `dfx deploy`.
+The local network is **per project** (not one global replica). Default port is **8000**, not dfx’s **4943**.
 
 If you are making frontend changes, you can start a development server with
 
@@ -47,7 +54,7 @@ If you are making frontend changes, you can start a development server with
 npm start
 ```
 
-Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
+Which will start a server at `http://localhost:3000`.
 
 ### Note on frontend environment variables
 
