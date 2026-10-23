@@ -4,8 +4,15 @@ import { HttpAgent } from "@icp-sdk/core/agent";
 let dbank_backend;
 
 async function initActor() {
-    const agent = new HttpAgent({ host: `http://${window.location.hostname}:4943` });
-    await agent.fetchRootKey();
+    const agent = new HttpAgent({
+        host:
+            process.env.DFX_NETWORK === "ic"
+                ? "https://icp-api.io"
+                : `http://${window.location.hostname}:8000`,
+    });
+    if (process.env.DFX_NETWORK !== "ic") {
+        await agent.fetchRootKey();
+    }
     dbank_backend = createActor(canisterId, { agent });
 }
 

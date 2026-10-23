@@ -1,0 +1,8 @@
+[toolchain]
+moc = "1.9.0"
+
+[canisters.dbank_backend]
+main = "src/dbank_backend/main.mo"
+
+[dependencies]
+base = "0.16.0"

@@ -10,6 +10,12 @@
 # dfx temporary files
 .dfx/
 
+# icp-cli cache (ephemeral; keep .icp/data/ if present)
+.icp/cache/
+
+# mops build cache
+.mops/
+
 # generated files
 **/declarations/
 
