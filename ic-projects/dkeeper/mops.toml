@@ -3,3 +3,6 @@ moc = "1.9.0"
 
 [canisters.dkeeper_backend]
 main = "src/dkeeper_backend/main.mo"
+
+[dependencies]
+base = "0.16.0"
